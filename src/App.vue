@@ -7,13 +7,13 @@
   </div>
 </template>
 <script>
-  import SHeader from '@/common/header'
-  export default {
-    name: 'app',
-    components: {
-      SHeader
-    }
+import SHeader from '@/common/header'
+export default {
+  name: 'app',
+  components: {
+    SHeader
   }
+}
 </script>
 <style lang="scss" rel="stylesheet/scss">
   @import "assets/style/index.scss";

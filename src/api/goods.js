@@ -14,3 +14,10 @@ export function getSearch (data) {
     params: data
   })
 }
+
+export function productDet (data) {
+  return request({
+    url: '/goods/' + data,
+    method: 'get'
+  })
+}

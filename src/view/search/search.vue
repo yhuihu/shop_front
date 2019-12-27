@@ -69,7 +69,7 @@
       </div>
       <div class="no-info" v-if="noResult">
         <div class="no-data">
-          <img src="/src/assets/images/no-search.png" alt="#">
+          <img src="../../assets/images/no-search.png" alt="#">
           <br> 抱歉！没有为您找到相关的商品
         </div>
       </div>

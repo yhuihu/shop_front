@@ -3,14 +3,14 @@
     <div style="">
       <div class="good-img">
         <a @click="openProduct(msg.id)">
-          <img v-lazy="msg.image.split(',')[0]" :alt="msg.id" :key="msg.image.split(',')[0]">
+          <img v-lazy="msg.image.split(',')[0]" :alt="msg.id" :key="msg.image.split(',')[0]" >
         </a>
       </div>
       <h6 class="good-title" v-html="msg.title">{{msg.title}}</h6>
       <h3 class="sub-title ellipsis">{{msg.sellPoint}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
-          <a @click="openProduct(msg.productId)">
+          <a @click="openProduct(msg.id)">
             <my-button text="查看详情" style="margin: 0 5px"/>
           </a>
           <my-button text="加入购物车"
@@ -56,7 +56,7 @@ export default {
           //   this.ADD_CART({productId: id, salePrice: price, productName: name, productImg: img})
           // })
         } else { // 未登录 vuex
-          this.ADD_CART({productId: id, salePrice: price, productName: name, productImg: img})
+          this.ADD_CART({ productId: id, salePrice: price, productName: name, productImg: img })
         }
         // 加入购物车动画
         var dom = event.target
@@ -64,9 +64,9 @@ export default {
         let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
         let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
         // 需要触发
-        this.ADD_ANIMATION({moveShow: true, elLeft: elLeft, elTop: elTop, img: img})
+        this.ADD_ANIMATION({ moveShow: true, elLeft: elLeft, elTop: elTop, img: img })
         if (!this.showCart) {
-          this.SHOW_CART({showCart: true})
+          this.SHOW_CART({ showCart: true })
         }
       }
     }
