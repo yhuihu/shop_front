@@ -45,9 +45,8 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error)
     Message({
-      message: error.message,
+      message: '网络请求错误，请稍后重试',
       type: 'error',
       duration: 5 * 1000
     })

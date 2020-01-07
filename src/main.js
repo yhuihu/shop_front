@@ -1,7 +1,26 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import { Cascader, Button, Pagination, Checkbox, Icon, Autocomplete, Loading, Message, MessageBox, Notification, Steps, Step, Table, TableColumn, Input, Dialog, Select, Option } from 'element-ui'
+import {
+  Cascader,
+  Button,
+  Pagination,
+  Checkbox,
+  Icon,
+  Autocomplete,
+  Loading,
+  Message,
+  MessageBox,
+  Notification,
+  Steps,
+  Step,
+  Table,
+  TableColumn,
+  Input,
+  Dialog,
+  Select,
+  Option
+} from 'element-ui'
 import VueLazyLoad from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
 import store from './store'

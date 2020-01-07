@@ -1,4 +1,4 @@
-import {getCookie, setCookie} from '@/utils/auth'
+import { getCookie, setCookie } from '@/utils/auth'
 
 const state = {
   showCart: false,
@@ -39,13 +39,13 @@ const mutations = {
 
 const actions = {
   // 初始化购物车
-  initCart ({commit}) {
+  initCart ({ commit }) {
     let initCart = getCookie('buyCart')
     if (initCart) {
       commit('SET_CART_LIST', JSON.parse(initCart))
     }
   },
-  addCart ({commit}, {productId, salePrice, productName, productImg, productNum = 1}) {
+  addCart ({ commit }, { productId, salePrice, productName, productImg, productNum = 1 }) {
     let cart = state.cartList
     let flag = true
     let goods = {
@@ -73,7 +73,7 @@ const actions = {
     // 存入localStorage
     setCookie('buyCart', cart)
   },
-  addAnimation ({commit}, {moveShow, elLeft, elTop, img, cartPositionT, cartPositionL, receiveInCart}) {
+  addAnimation ({ commit }, { moveShow, elLeft, elTop, img, cartPositionT, cartPositionL, receiveInCart }) {
     state.showMoveImg = moveShow
     if (elLeft) {
       commit('SET_EL_LEFT', elLeft)
@@ -86,10 +86,10 @@ const actions = {
       commit('SET_POSITION_LEFT', cartPositionL)
     }
   },
-  showCart ({commit}, {showCart}) {
+  showCart ({ commit }, { showCart }) {
     commit('SET_SHOW_CART', showCart)
   },
-  reduceCart ({commit}, {productId}) {
+  reduceCart ({ commit }, { productId }) {
     let cart = state.cartList
     cart.forEach((item, i) => {
       if (item.productId === productId) {
@@ -104,7 +104,7 @@ const actions = {
     // 存入localStorage
     setCookie('buyCart', state.cartList)
   },
-  editCart ({commit}, {productId, productNum, checked}) {
+  editCart ({ commit }, { productId, productNum, checked }) {
     let cart = state.cartList
     if (productNum) {
       cart.forEach((item, i) => {

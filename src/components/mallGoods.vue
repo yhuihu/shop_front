@@ -15,7 +15,7 @@
           </a>
           <my-button text="加入购物车"
                      style="margin: 0 5px"
-                     @btnClick="addCart(msg.productId,msg.salePrice,msg.productName,msg.productImageBig)"
+                     @btnClick="addCart(msg.id,msg.price,msg.title,msg.image.split(',')[0])"
                      classStyle="main-btn"
           />
         </div>

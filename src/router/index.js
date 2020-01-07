@@ -6,8 +6,13 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/home',
     name: '首页',
-    component: () => import('@/components/HelloWorld')
+    component: () => import('@/view/index')
   },
   {
     path: '/login',
