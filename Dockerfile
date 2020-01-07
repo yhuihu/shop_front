@@ -1,15 +1,15 @@
 FROM node:lts-alpine as build-stage
+RUN npm config set registry https://registry.npm.taobao.org
+# install simple http server for serving static content
+RUN npm install -g http-server
+# make the 'app' folder the current working directory
 WORKDIR /app
+# copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json ./
-RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
-RUN cnpm install
+# install project dependencies
+RUN npm install
+# copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
+# build app for production with minification
 RUN npm run build
-
-# production stage
-FROM nginx:stable-alpine as production-stage
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["http-server","dist"]
