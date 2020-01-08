@@ -260,10 +260,7 @@ export default {
         for (let i = 0; i < res.data.length; i++) {
           this.searchResults.push({ 'value': res.data[i] })
         }
-      }).catch(err => {
-        console.log(err)
       })
-      return null
     }
   },
   mounted () {
