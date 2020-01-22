@@ -1,76 +1,81 @@
 <template>
-  <div class="goods">
-    <div class="nav-subs">
-      <div class="nav-sub-bgs"></div>
-      <div class="nav-sub-wrappers">
+  <div>
+    <s-header>
+      <div slot="nav"></div>
+    </s-header>
+    <div class="goods">
+      <div class="nav-subs">
+        <div class="nav-sub-bgs"></div>
+        <div class="nav-sub-wrappers">
+          <div class="w">
+            <ul class="nav-lists">
+              <li>
+                <router-link to="/">
+                  <a>首页</a>
+                </router-link>
+              </li>
+              <li>
+                <a class="active">搜索结果</a>
+              </li>
+              <li>
+                <a v-if="searching === true">拼命搜索中...</a>
+                <a v-if="searching === false">共为您找到 {{total}} 款商品信息</a>
+              </li>
+            </ul>
+            <div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav">
         <div class="w">
-          <ul class="nav-lists">
-            <li>
-              <router-link to="/">
-                <a>首页</a>
-              </router-link>
-            </li>
-            <li>
-              <a class="active">搜索结果</a>
-            </li>
-            <li>
-              <a v-if="searching === true">拼命搜索中...</a>
-              <a v-if="searching === false">共为您找到 {{total}} 款商品信息</a>
-            </li>
-          </ul>
-          <div></div>
+          <div class="price-interval">
+            <a href="javascript:" :class="{active:sortType===1}" @click="reset()">综合排序</a>
+            <a href="javascript:" @click="sortByPrice(1)" :class="{active:sortType===2}">价格从低到高</a>
+            <a href="javascript:" @click="sortByPrice(-1)" :class="{active:sortType===3}">价格从高到低</a>
+          </div>
+          <div class="price-interval">
+            <label>
+              <input type="number" class="input" placeholder="价格" v-model="min">
+            </label>
+            <span style="margin: 0 5px"> - </span>
+            <label>
+              <input type="number" placeholder="价格" v-model="max">
+            </label>
+            <el-cascader style="margin-left: 2%"
+                         size="mini"
+                         :show-all-levels="false"
+                         :options="options"
+                         @change="handleChange"
+                         clearable
+                         placeholder="选择分类"/>
+            <my-button text="确定" classStyle="main-btn" @btnClick="reset" style="margin-left: 10px;"/>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="nav">
-      <div class="w">
-        <div class="price-interval">
-          <a href="javascript:" :class="{active:sortType===1}" @click="reset()">综合排序</a>
-          <a href="javascript:" @click="sortByPrice(1)" :class="{active:sortType===2}">价格从低到高</a>
-          <a href="javascript:" @click="sortByPrice(-1)" :class="{active:sortType===3}">价格从高到低</a>
+      <div v-loading="loading" element-loading-text="加载中..." style="min-height: 30vw;">
+        <div class="img-item" v-if="!noResult">
+          <!--商品-->
+          <div class="goods-box w">
+            <mall-goods v-for="(item,i) in goods" :key="i" :msg="item"/>
+          </div>
+          <el-pagination
+            v-if="!noResult&&!error"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[10, 20, 40, 80]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+          </el-pagination>
         </div>
-        <div class="price-interval">
-          <label>
-            <input type="number" class="input" placeholder="价格" v-model="min">
-          </label>
-          <span style="margin: 0 5px"> - </span>
-          <label>
-            <input type="number" placeholder="价格" v-model="max">
-          </label>
-          <el-cascader style="margin-left: 2%"
-                       size="mini"
-                       :show-all-levels="false"
-                       :options="options"
-                       @change="handleChange"
-                       clearable
-                       placeholder="选择分类"/>
-          <my-button text="确定" classStyle="main-btn" @btnClick="reset" style="margin-left: 10px;"/>
-        </div>
-      </div>
-    </div>
-
-    <div v-loading="loading" element-loading-text="加载中..." style="min-height: 30vw;">
-      <div class="img-item" v-if="!noResult">
-        <!--商品-->
-        <div class="goods-box w">
-          <mall-goods v-for="(item,i) in goods" :key="i" :msg="item"/>
-        </div>
-        <el-pagination
-          v-if="!noResult&&!error"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 40, 80]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
-      </div>
-      <div class="no-info" v-if="noResult">
-        <div class="no-data">
-          <img src="../../assets/images/no-search.png" alt="#">
-          <br> 抱歉！没有为您找到相关的商品
+        <div class="no-info" v-if="noResult">
+          <div class="no-data">
+            <img src="../../assets/images/no-search.png" alt="#">
+            <br> 抱歉！没有为您找到相关的商品
+          </div>
         </div>
       </div>
     </div>
@@ -81,6 +86,7 @@ import { getSearch } from '@/api/goods.js'
 import { getAllClassification } from '@/api/classification'
 import MallGoods from '@/components/mallGoods'
 import MyButton from '@/components/myButton'
+import SHeader from '@/common/header'
 
 export default {
   data () {
@@ -202,7 +208,8 @@ export default {
   },
   components: {
     MallGoods,
-    MyButton
+    MyButton,
+    SHeader
   }
 }
 </script>

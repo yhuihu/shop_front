@@ -1,64 +1,69 @@
 <!--商品详情-->
 <template>
-  <div class="w store-content">
-    <div class="gray-box">
-      <div class="gallery-wrapper">
-        <div class="gallery">
-          <div class="thumbnail">
-            <ul>
-              <li v-for="(item,i) in small" :key="i" :class="{on:big===item}" @click="big=item">
-                <img v-lazy="item" :alt="product.productName">
-              </li>
-            </ul>
-          </div>
-          <div class="thumb">
-            <div class="big">
-              <img :src="big" :alt="product.productName">
+  <div>
+    <s-header>
+      <div slot="nav"></div>
+    </s-header>
+    <div class="w store-content">
+      <div class="gray-box">
+        <div class="gallery-wrapper">
+          <div class="gallery">
+            <div class="thumbnail">
+              <ul>
+                <li v-for="(item,i) in small" :key="i" :class="{on:big===item}" @click="big=item">
+                  <img v-lazy="item" :alt="product.productName">
+                </li>
+              </ul>
+            </div>
+            <div class="thumb">
+              <div class="big">
+                <img :src="big" :alt="product.productName">
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <!--右边-->
-      <div class="banner">
-        <div class="sku-custom-title">
-          <h4>{{product.title}}</h4>
-          <h6>
-            <span>{{product.sellPoint}}</span>
-            <span class="price">
+        <!--右边-->
+        <div class="banner">
+          <div class="sku-custom-title">
+            <h4>{{product.title}}</h4>
+            <h6>
+              <span>{{product.sellPoint}}</span>
+              <span class="price">
               <em>¥</em><i>{{Number(product.price).toFixed(2)}}</i></span>
-          </h6>
-        </div>
-        <div class="num">
-          <div>
-            <!--          TODO 卖家信息-->
-            卖家信息
+            </h6>
           </div>
-        </div>
-        <div class="buy">
-          <y-button text="加入购物车"
-                    @btnClick="addCart(product.id,product.price,product.title,product.image.split(',')[0])"
-                    classStyle="main-btn"
-                    style="width: 145px;height: 50px;line-height: 48px"/>
-          <y-button text="现在购买"
-                    @btnClick="checkout(product.productId)"
-                    style="width: 145px;height: 50px;line-height: 48px;margin-left: 10px"/>
+          <div class="num">
+            <div>
+              <!--          TODO 卖家信息-->
+              卖家信息
+            </div>
+          </div>
+          <div class="buy">
+            <y-button text="加入购物车"
+                      @btnClick="addCart(product.id,product.price,product.title,product.image.split(',')[0])"
+                      classStyle="main-btn"
+                      style="width: 145px;height: 50px;line-height: 48px"/>
+            <y-button text="现在购买"
+                      @btnClick="checkout(product.productId)"
+                      style="width: 145px;height: 50px;line-height: 48px;margin-left: 10px"/>
+          </div>
         </div>
       </div>
-    </div>
-    <!--产品信息-->
-    <div class="item-info">
-      <y-shelf :good-id=product.id>
-        <div slot="content">
-          <div class="img-item" v-if="productMsg">
-            <div v-html="productMsg">{{ productMsg }}</div>
+      <!--产品信息-->
+      <div class="item-info">
+        <y-shelf :good-id=product.id>
+          <div slot="content">
+            <div class="img-item" v-if="productMsg">
+              <div v-html="productMsg">{{ productMsg }}</div>
+            </div>
+            <div class="no-info" v-else>
+              <img src="../../assets/images/no-data.png" alt="#">
+              <br>
+              该商品暂无内容数据
+            </div>
           </div>
-          <div class="no-info" v-else>
-            <img src="../../assets/images/no-data.png" alt="#">
-            <br>
-            该商品暂无内容数据
-          </div>
-        </div>
-      </y-shelf>
+        </y-shelf>
+      </div>
     </div>
   </div>
 </template>
@@ -68,6 +73,7 @@ import { mapState } from 'vuex'
 import YShelf from '@/components/goodsButton'
 import YButton from '@/components/myButton'
 import { getCookie } from '@/utils/auth'
+import SHeader from '@/common/header'
 
 export default {
   data () {
@@ -83,10 +89,10 @@ export default {
     }
   },
   components: {
-    YShelf, YButton
+    YShelf, YButton, SHeader
   },
   computed: {
-    ...mapState(['login', 'showMoveImg', 'showCart'])
+    ...mapState(['token', 'showMoveImg', 'showCart'])
   },
   methods: {
     _productDet (productId) {
@@ -107,12 +113,12 @@ export default {
     },
     addCart (id, price, name, img) {
       if (!this.showMoveImg) { // 动画是否在运动
-        if (this.login) { // 登录了 直接存在用户名下
+        if (this.token != null) { // 登录了 直接存在用户名下
           addCart({ userId: this.userId, productId: id }).then(res => {
             // 并不重新请求数据
           })
         }
-        this.$store.dispatch('addCart', {
+        this.$store.dispatch('cart/addCart', {
           productId: id,
           salePrice: price,
           productName: name,
@@ -124,9 +130,11 @@ export default {
         let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
         let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
         // 需要触发
-        this.ADD_ANIMATION({ moveShow: true, elLeft: elLeft, elTop: elTop, img: img })
+        this.$store.dispatch('cart/addAnimation', { moveShow: true, elLeft: elLeft, elTop: elTop, img: img })
+        // this.ADD_ANIMATION({ moveShow: true, elLeft: elLeft, elTop: elTop, img: img })
         if (!this.showCart) {
-          this.SHOW_CART({ showCart: true })
+          this.$store.dispatch('cart/showCart', { showCart: true })
+          // this.SHOW_CART({ showCart: true })
         }
       }
     },

@@ -28,11 +28,16 @@ const actions = {
   login ({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setCookie('SECOND_HAND_USER_TOKEN', data.token)
-        resolve()
+      login({ username: username.trim(), password: password }).then(res => {
+        if (res.code !== 20000) {
+          reject(res.message)
+        } else {
+          commit('SET_TOKEN', res.data.token)
+          setCookie('SECOND_HAND_USER_TOKEN', res.data.token)
+        }
+        // commit('SET_TOKEN', data.token)
+        // setCookie('SECOND_HAND_USER_TOKEN', data.token)
+        resolve(res)
       }).catch(error => {
         reject(error)
       })
@@ -40,18 +45,18 @@ const actions = {
   },
 
   // get user info
-  getInfo ({ commit, state }) {
+  getInfo ({ commit }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-        if (!data) {
-          reject(new Error('获取个人信息失败，请重试.'))
+      getInfo().then(response => {
+        console.log(response)
+        if (response.code !== 20000) {
+          reject(response.message)
+        } else {
+          commit('SET_NAME', response.data.name)
+          commit('SET_AVATAR', response.data.avatar)
+          commit('SET_NICK_NAME', response.data.nickName)
+          resolve(response)
         }
-        const { name, avatar, nickName } = data
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_NICK_NAME', nickName)
-        resolve(data)
       }).catch(error => {
         reject(error)
       })
@@ -59,7 +64,7 @@ const actions = {
   },
 
   // user logout
-  logout ({ commit, state }) {
+  logout ({ commit }) {
     return new Promise((resolve, reject) => {
       logout().then(() => {
         commit('SET_TOKEN', '')

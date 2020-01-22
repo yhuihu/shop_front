@@ -147,7 +147,8 @@ import { mapGetters } from 'vuex'
 import MyButton from '@/components/myButton'
 import 'element-ui/lib/theme-chalk/index.css'
 import { recommend } from '@/api/goods'
-
+import { logout } from '@/api/user'
+import { removeCookie } from '@/utils/auth'
 export default {
   data () {
     return {
@@ -261,9 +262,17 @@ export default {
           this.searchResults.push({ 'value': res.data[i] })
         }
       })
+    },
+    // 退出登陆
+    _loginOut () {
+      logout().then(res => {
+        removeCookie('SECOND_HAND_USER_TOKEN')
+        window.location.href = '/'
+      })
     }
   },
   mounted () {
+    this.$store.dispatch('cart/initCart')
   },
   components: {
     MyButton

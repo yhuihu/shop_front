@@ -1,12 +1,10 @@
 <template>
-  <label>
     <input :type="inputType"
            readonly
            :class="classStyle"
            @click="btnClick($event)"
            :disabled="classStyle==='disabled-btn'"
            :value="text">
-  </label>
 </template>
 <script>
 export default {

@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import { getCookie } from '@/utils/auth'
 import {
   Cascader,
   Button,
+  ButtonGroup,
   Pagination,
   Checkbox,
   Icon,
@@ -25,6 +27,7 @@ import VueLazyLoad from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
 import store from './store'
 Vue.use(Button)
+Vue.use(ButtonGroup)
 Vue.use(Pagination)
 Vue.use(Checkbox)
 Vue.use(Icon)
@@ -54,6 +57,17 @@ Vue.prototype.$messageBox = MessageBox
 Vue.config.productionTip = false
 
 Vue.config.productionTip = false
+
+const whiteList = ['/', '/home', '/goods', '/login', '/register', '/goodsDetails', '/thanks', '/search', '/refreshsearch', '/refreshgoods'] // 不需要登陆的页面
+router.beforeEach(function (to, from, next) {
+  if (whiteList.indexOf(to.path) !== -1) { // 白名单
+    next()
+  } else {
+    if (getCookie('SECOND_HAND_USER_TOKEN') !== undefined) {
+      next()
+    } else { next('/login') }
+  }
+})
 
 new Vue({
   router,

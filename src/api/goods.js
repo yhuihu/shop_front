@@ -21,3 +21,11 @@ export function productDet (data) {
     method: 'get'
   })
 }
+
+export function addCart (data) {
+  return request({
+    url: '/cart',
+    method: 'post',
+    data
+  })
+}

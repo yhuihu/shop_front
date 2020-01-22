@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from '@/utils/auth'
+import { setStore, getStore } from '@/utils/storage'
 
 const state = {
   showCart: false,
@@ -7,10 +7,14 @@ const state = {
   cartPositionL: 0,
   elLeft: 0,
   elTop: 0,
+  showMoveImg: false,
   moveImgUrl: null,
   receiveInCart: false
 }
 const mutations = {
+  SET_SHOW_MOVE: (state, showMoveImg) => {
+    state.showMoveImg = showMoveImg
+  },
   SET_SHOW_CART: (state, showCart) => {
     state.showCart = showCart
   },
@@ -40,7 +44,7 @@ const mutations = {
 const actions = {
   // 初始化购物车
   initCart ({ commit }) {
-    let initCart = getCookie('buyCart')
+    let initCart = getStore('buyCart')
     if (initCart) {
       commit('SET_CART_LIST', JSON.parse(initCart))
     }
@@ -70,11 +74,13 @@ const actions = {
       cart.push(goods)
     }
     commit('SET_CART_LIST', cart)
-    // 存入localStorage
-    setCookie('buyCart', cart)
+    // 存入localStorage  TODO 待测试
+    console.log(state.cartList)
+    setStore('buyCart', cart)
   },
   addAnimation ({ commit }, { moveShow, elLeft, elTop, img, cartPositionT, cartPositionL, receiveInCart }) {
-    state.showMoveImg = moveShow
+    commit('SET_SHOW_MOVE', moveShow)
+    // state.showMoveImg = moveShow TODO 替换成方法
     if (elLeft) {
       commit('SET_EL_LEFT', elLeft)
       commit('SET_EL_TOP', elTop)
@@ -102,7 +108,7 @@ const actions = {
     })
     commit('SET_CART_LIST', cart)
     // 存入localStorage
-    setCookie('buyCart', state.cartList)
+    setStore('buyCart', state.cartList)
   },
   editCart ({ commit }, { productId, productNum, checked }) {
     let cart = state.cartList
@@ -126,7 +132,7 @@ const actions = {
     }
     commit('SET_CART_LIST', cart)
     // 存入localStorage
-    setCookie('buyCart', state.cartList)
+    setStore('buyCart', state.cartList)
   }
 }
 
