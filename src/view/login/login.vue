@@ -150,30 +150,31 @@ export default {
       }
       this.$store.dispatch('user/login', params).then(res => {
         if (res.code === 20000) {
-          this.$store.dispatch('user/getInfo').catch(err => {
+          this.$store.dispatch('user/getInfo').then(res => {
+            // 登录后添加当前缓存中的购物车
+            this.login_addCart()
+            if (this.cart.length) {
+              addCart({ list: this.cart }).then(() => {
+                removeStore('buyCart')
+              }).catch()
+              // for (let i = 0; i < this.cart.length; i++) {
+              //   addCart(this.cart[i]).then(res => {
+              //     if (res.success === true) {
+              //     }
+              //   })
+              // }
+              this.$router.push({
+                path: '/'
+              })
+            } else {
+              this.$router.push({
+                path: '/'
+              })
+            }
+          }).catch(err => {
             this.message(err)
             this.$store.dispatch('user/logout')
-            return false
           })
-          // 登录后添加当前缓存中的购物车
-          this.login_addCart()
-          if (this.cart.length) {
-            addCart({ list: this.cart }).catch()
-            // for (let i = 0; i < this.cart.length; i++) {
-            //   addCart(this.cart[i]).then(res => {
-            //     if (res.success === true) {
-            //     }
-            //   })
-            // }
-            // removeStore('buyCart')
-            this.$router.push({
-              path: '/'
-            })
-          } else {
-            this.$router.push({
-              path: '/'
-            })
-          }
         } else {
           this.message(res.result.message)
           return false

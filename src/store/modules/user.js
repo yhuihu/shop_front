@@ -35,8 +35,6 @@ const actions = {
           commit('SET_TOKEN', res.data.token)
           setCookie('SECOND_HAND_USER_TOKEN', res.data.token)
         }
-        // commit('SET_TOKEN', data.token)
-        // setCookie('SECOND_HAND_USER_TOKEN', data.token)
         resolve(res)
       }).catch(error => {
         reject(error)
@@ -48,7 +46,6 @@ const actions = {
   getInfo ({ commit }) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
-        console.log(response)
         if (response.code !== 20000) {
           reject(response.message)
         } else {

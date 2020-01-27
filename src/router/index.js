@@ -35,6 +35,11 @@ const routes = [
     component: () => import('@/view/search/search')
   },
   {
+    path: '/goods',
+    name: '搜索商品',
+    component: () => import('@/view/goods/goods')
+  },
+  {
     path: '/refreshSearch',
     name: '刷新搜索结果',
     component: () => import('@/view/refresh/searchRefresh')

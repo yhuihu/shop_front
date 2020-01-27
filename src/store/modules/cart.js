@@ -74,8 +74,6 @@ const actions = {
       cart.push(goods)
     }
     commit('SET_CART_LIST', cart)
-    // 存入localStorage  TODO 待测试
-    console.log(state.cartList)
     setStore('buyCart', cart)
   },
   addAnimation ({ commit }, { moveShow, elLeft, elTop, img, cartPositionT, cartPositionL, receiveInCart }) {

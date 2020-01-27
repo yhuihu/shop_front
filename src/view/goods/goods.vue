@@ -4,29 +4,6 @@
       <div slot="nav"></div>
     </s-header>
     <div class="goods">
-      <div class="nav-subs">
-        <div class="nav-sub-bgs"></div>
-        <div class="nav-sub-wrappers">
-          <div class="w">
-            <ul class="nav-lists">
-              <li>
-                <router-link to="/">
-                  <a>首页</a>
-                </router-link>
-              </li>
-              <li>
-                <a class="active">搜索结果</a>
-              </li>
-              <li>
-                <a v-if="searching === true">拼命搜索中...</a>
-                <a v-if="searching === false">共为您找到 {{total}} 款商品信息</a>
-              </li>
-            </ul>
-            <div></div>
-          </div>
-        </div>
-      </div>
-
       <div class="nav">
         <div class="w">
           <div class="price-interval">
@@ -53,7 +30,6 @@
           </div>
         </div>
       </div>
-
       <div v-loading="loading" element-loading-text="加载中..." style="min-height: 30vw;">
         <div class="img-item" v-if="!noResult">
           <!--商品-->
@@ -181,7 +157,8 @@ export default {
         const newData = res.data
         this.handleData(newData)
         this.options.push(newData[0])
-      }).catch(() => {})
+      }).catch(() => {
+      })
     },
     handleData (data) {
       for (let i = 0; i < data.length; i++) {
@@ -201,10 +178,6 @@ export default {
     this.key = this.$route.query.key
     this._getSearch()
     this.getClassification()
-    // recommend().then(res => {
-    //   let data = res.result
-    //   this.recommendPanel = data[0]
-    // })
   },
   components: {
     MallGoods,
@@ -262,83 +235,12 @@ export default {
         border-radius: 5px;
       }
     }
-
-    .classification-interval {
-      padding: 0 15px;
-      @extend %block-center;
-    }
   }
 
   .goods-box {
     > div {
       float: left;
       border: 1px solid #efefef;
-    }
-  }
-
-  .nav-subs {
-    position: relative;
-    z-index: 20;
-    height: 90px;
-    background: #f7f7f7;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .04);
-
-    .nav-sub-wrappers {
-      padding: 31px 0;
-      height: 90px;
-      position: relative;
-    }
-
-    .w {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .nav-lists {
-      height: 28px;
-      line-height: 28px;
-      display: flex;
-      align-items: center;
-      height: 100%;
-
-      li:first-child {
-        padding-left: 0;
-
-        a {
-          padding-left: 10px;
-        }
-      }
-
-      li {
-        position: relative;
-        float: left;
-        padding-left: 2px;
-
-        a {
-          display: block;
-          // cursor: default;
-          padding: 0 10px;
-          color: #666;
-
-          &.active {
-            font-weight: bold;
-          }
-        }
-
-        a:hover {
-          color: #5683EA;
-        }
-      }
-
-      li:before {
-        content: ' ';
-        position: absolute;
-        left: 0;
-        top: 13px;
-        width: 2px;
-        height: 2px;
-        background: #bdbdbd;
-      }
     }
   }
 
@@ -354,28 +256,6 @@ export default {
     }
   }
 
-  .section {
-    padding-top: 8vw;
-    margin-bottom: -5vw;
-    width: 1218px;
-    align-self: center;
-  }
-
-  @media (min-width: 1px) {
-    .nav-subs .nav-sub-wrappers:after {
-      display: block;
-    }
-  }
-
-  .recommend {
-    display: flex;
-
-    > div {
-      flex: 1;
-      width: 25%;
-    }
-  }
-
   .img-item {
     display: flex;
     flex-direction: column;
@@ -386,4 +266,19 @@ export default {
     margin: 3vw 10vw 2vw;
   }
 
+  .section {
+    padding-top: 8vw;
+    margin-bottom: -5vw;
+    width: 1218px;
+    align-self: center;
+  }
+
+  .recommend {
+    display: flex;
+
+    > div {
+      flex: 1;
+      width: 25%;
+    }
+  }
 </style>

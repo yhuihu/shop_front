@@ -27,7 +27,7 @@ service.interceptors.response.use(
     if (response.status === 200) {
       const res = response.data
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-      // to re-login
+        // to re-login
         MessageBox.confirm('登录过期', '退出', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
@@ -38,18 +38,39 @@ service.interceptors.response.use(
           })
         })
       }
+      if (res.code === 20003) {
+        Message({
+          message: res.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
       return response.data
     } else {
       return Promise.reject(new Error(response.data.message || 'Error'))
     }
   },
   error => {
-    Message({
-      message: '网络请求错误，请稍后重试',
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    if (error.response.status === 401) {
+      MessageBox.confirm('登录过期', '退出', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+      }).catch(() => {
+      }).finally(() => {
+        store.dispatch('user/resetToken').then(() => {
+          location.reload()
+        })
+      })
+    } else {
+      Message({
+        message: '网络请求错误，请稍后重试',
+        type: 'error',
+        duration: 5 * 1000
+      })
+      return Promise.reject(error)
+    }
   }
 )
 export default service
