@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import { getCookie } from '@/utils/auth'
+import 'element-ui/lib/theme-chalk/index.css'
 import {
   Cascader,
   Button,
@@ -19,6 +20,13 @@ import {
   Table,
   TableColumn,
   Input,
+  Row,
+  Col,
+  Form,
+  FormItem,
+  Radio,
+  RadioGroup,
+  Upload,
   Dialog,
   Select,
   Option
@@ -37,6 +45,13 @@ Vue.use(Step)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Input)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(Upload)
 Vue.use(Dialog)
 Vue.use(Select)
 Vue.use(Option)
@@ -58,7 +73,7 @@ Vue.config.productionTip = false
 
 Vue.config.productionTip = false
 
-const whiteList = ['/', '/home', '/goods', '/login', '/register', '/goodsDetails', '/thanks', '/search', '/refreshsearch', '/refreshgoods'] // 不需要登陆的页面
+const whiteList = ['/', '/home', '/goods', '/test', '/login', '/register', '/goodsDetails', '/thanks', '/search', '/refreshsearch', '/refreshgoods'] // 不需要登陆的页面
 router.beforeEach(function (to, from, next) {
   if (whiteList.indexOf(to.path) !== -1) { // 白名单
     next()

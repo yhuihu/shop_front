@@ -36,3 +36,11 @@ export function getCart () {
     method: 'get'
   })
 }
+
+export function addGoods (data) {
+  return request({
+    url: '/goods',
+    method: 'post',
+    data
+  })
+}

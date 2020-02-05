@@ -36,7 +36,7 @@ const routes = [
   },
   {
     path: '/goods',
-    name: '搜索商品',
+    name: '所有商品',
     component: () => import('@/view/goods/goods')
   },
   {
@@ -48,6 +48,44 @@ const routes = [
     path: '/goodsDetails',
     name: '商品详情',
     component: () => import('@/view/goods/goodsDetails')
+  },
+  {
+    path: '/user',
+    name: 'user',
+    component: () => import('@/view/user/user'),
+    redirect: '/user/information',
+    children: [
+      {
+        path: 'information',
+        name: '账户资料',
+        component: () => import('@/view/user/children/information')
+      },
+      {
+        path: 'orderList',
+        name: '订单列表',
+        component: () => import('@/view/user/children/orderList')
+      },
+      {
+        path: 'orderDetail',
+        name: '订单详情',
+        component: () => import('@/view/user/children/orderDetail')
+      },
+      {
+        path: 'myGoods',
+        name: '我的闲置物品',
+        component: () => import('@/view/user/children/information')
+      },
+      {
+        path: 'publishGoods',
+        name: '处理闲置物品',
+        component: () => import('@/view/user/children/addGoods')
+      },
+      {
+        path: 'addressList',
+        name: '收货地址',
+        component: () => import('@/view/user/children/addressList')
+      }
+    ]
   }
 ]
 

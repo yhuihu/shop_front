@@ -21,3 +21,25 @@ export function logout () {
     method: 'post'
   })
 }
+
+export function getAddress () {
+  return request({
+    url: '/address',
+    method: 'get'
+  })
+}
+
+export function addAddress (data) {
+  return request({
+    url: '/address',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteAddress (data) {
+  return request({
+    url: '/address?addressId=' + data,
+    method: 'delete'
+  })
+}

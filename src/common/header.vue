@@ -41,19 +41,19 @@
                         <p class="name">{{this.nickName}}</p>
                       </li>
                       <li>
-                        <router-link to="/user/orderList">我的订单</router-link>
-                      </li>
-                      <li>
                         <router-link to="/user/information">账号资料</router-link>
                       </li>
                       <li>
+                        <router-link to="/user/orderList">我的订单</router-link>
+                      </li>
+                      <li>
+                        <router-link to="/user/myGoods">我的闲置物品</router-link>
+                      </li>
+                      <li>
+                        <router-link to="/user/publishGoods">处理闲置物品</router-link>
+                      </li>
+                      <li>
                         <router-link to="/user/addressList">收货地址</router-link>
-                      </li>
-                      <li>
-                        <router-link to="/user/support">售后服务</router-link>
-                      </li>
-                      <li>
-                        <router-link to="/user/coupon">我的优惠</router-link>
                       </li>
                       <li>
                         <a href="javascript:" @click="_loginOut">退出</a>
@@ -287,9 +287,9 @@ export default {
     }
   },
   mounted () {
-    // TODO 判断如果登录了从后端获取购物车，否则从store中拿
     if (this.token) {
       this._getCartList()
+      this.$store.dispatch('user/getInfo')
     } else {
       this.$store.dispatch('cart/initCart')
     }

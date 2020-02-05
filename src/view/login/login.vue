@@ -157,12 +157,6 @@ export default {
               addCart({ list: this.cart }).then(() => {
                 removeStore('buyCart')
               }).catch()
-              // for (let i = 0; i < this.cart.length; i++) {
-              //   addCart(this.cart[i]).then(res => {
-              //     if (res.success === true) {
-              //     }
-              //   })
-              // }
               this.$router.push({
                 path: '/'
               })
@@ -171,16 +165,13 @@ export default {
                 path: '/'
               })
             }
-          }).catch(err => {
-            this.message(err)
+          }).catch(() => {
             this.$store.dispatch('user/logout')
           })
         } else {
-          this.message(res.result.message)
           return false
         }
-      }).catch(err => {
-        this.message(err)
+      }).catch(() => {
       }).finally(() => {
         this.loginTxt = '登录'
       }
