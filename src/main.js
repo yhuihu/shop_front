@@ -18,6 +18,9 @@ import {
   Steps,
   Step,
   Table,
+  Tag,
+  Popconfirm,
+  Image,
   TableColumn,
   Input,
   Row,
@@ -47,6 +50,9 @@ Vue.use(TableColumn)
 Vue.use(Input)
 Vue.use(Row)
 Vue.use(Col)
+Vue.use(Tag)
+Vue.use(Popconfirm)
+Vue.use(Image)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Radio)

@@ -1,27 +1,4 @@
 import request from '@/utils/request'
-
-export function recommend (data) {
-  return request({
-    url: '/goods/recommend/' + data,
-    method: 'get'
-  })
-}
-
-export function getSearch (data) {
-  return request({
-    url: '/goods',
-    method: 'get',
-    params: data
-  })
-}
-
-export function productDet (data) {
-  return request({
-    url: '/goods/' + data,
-    method: 'get'
-  })
-}
-
 export function addCart (data) {
   return request({
     url: '/cart',
@@ -37,10 +14,63 @@ export function getCart () {
   })
 }
 
+export function recommend (data) {
+  return request({
+    url: '/goods/recommend/' + data,
+    method: 'get'
+  })
+}
+
+export function getSearch (data) {
+  return request({
+    url: '/goods/search',
+    method: 'get',
+    params: data
+  })
+}
+
+export function productDet (data) {
+  return request({
+    url: '/goods/' + data,
+    method: 'get'
+  })
+}
+
+export function getMyGoods (data) {
+  return request({
+    url: '/goods',
+    method: 'get',
+    params: data
+  })
+}
+
+export function getMyGoodsDetail (data) {
+  return request({
+    url: '/goods/detail/' + data,
+    method: 'get'
+  })
+}
+
 export function addGoods (data) {
   return request({
     url: '/goods',
     method: 'post',
+    data
+  })
+}
+
+export function deleteMyGoods (data) {
+  return request({
+    url: '/goods',
+    method: 'delete',
+    params: data
+  })
+}
+
+export function updateMyGoods (data) {
+  return request({
+    url: '/goods',
+    method: 'put',
     data
   })
 }

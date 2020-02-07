@@ -73,7 +73,7 @@ const routes = [
       {
         path: 'myGoods',
         name: '我的闲置物品',
-        component: () => import('@/view/user/children/information')
+        component: () => import('@/view/user/children/myGoods')
       },
       {
         path: 'publishGoods',

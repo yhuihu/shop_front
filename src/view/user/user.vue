@@ -15,7 +15,8 @@
               <ul class="account-nav">
                 <li v-for="(item,i) in nav" :key='i' :class="{current:item.name===title}"
                     @click="tab(item)">
-                  <a href="javascript:;">{{item.name}}</a></li>
+                  <a href="javascript:;">{{item.name}}</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -53,7 +54,9 @@ export default {
   },
   methods: {
     tab (e) {
-      this.$router.push({ path: '/user/' + e.path })
+      if (this.$route.path !== '/user/' + e.path) {
+        this.$router.push({ path: '/user/' + e.path })
+      }
     }
   },
   created () {
