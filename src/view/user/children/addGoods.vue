@@ -185,7 +185,6 @@ export default {
       if (file.response) {
         this.form.fileList.push(res.data.path)
       }
-      console.log(this.imageList)
     },
     handleData (data) {
       for (let i = 0; i < data.length; i++) {
@@ -197,7 +196,6 @@ export default {
       }
     },
     handleChange (value) {
-      console.log(value)
       this.form.classificationId = value[value.length - 1]
     },
     // 鼠标单击的事件
@@ -242,8 +240,7 @@ export default {
             } else {
               this.$root.$message.error('出现错误~')
             }
-          }).catch(() => {
-          })
+          }).catch(() => {})
         } else {
           return false
         }
@@ -277,6 +274,9 @@ export default {
           break
         }
       }
+      if (!this.flag) {
+        this.classificationName.splice(this.classificationName.length - 1, 1)
+      }
     }
   },
   mounted () {
@@ -288,12 +288,16 @@ export default {
       this.goodsId = target
       await this.initUpdateData(this.goodsId)
       for (let i = 0; i < this.options.length; i++) {
+        this.classificationName = []
         this.classificationName.push(this.options[i].value)
         if (this.options[i].children) {
           await this.checkOptions(this.options[i].children)
           if (this.flag) {
             break
           }
+        } else if (this.options[i].value === this.form.classificationId) {
+          this.flag = true
+          break
         }
       }
       this.value = this.classificationName
