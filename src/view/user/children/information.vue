@@ -2,124 +2,87 @@
   <div>
     <y-shelf title="账户资料">
       <div slot="content">
-        <div class="avatar-box">
-          <div class=img-box><img :src="userInfo.info.file" alt=""></div>
-          <div class="r-box">
-            <h3 style="margin-left: 13px;">修改头像</h3>
-            <my-button text="上传头像" classStyle="main-btn" style="margin: 0;" @btnClick="editAvatar()"></my-button>
-          </div>
-        </div>
-
-        <!--        修改头像插件-->
-        <div class="edit-avatar" v-if="editAvatarShow">
-          <y-shelf title="设置头像">
-            <span slot="right">
-              <span class="close" @click="editAvatarShow=false">
-                <svg t="1501234940517" class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg" p-id="3014" xmlns:xlink="http://www.w3.org/1999/xlink"
-                     width="20" height="20">
-                  <path
-                    d="M941.576 184.248l-101.824-101.824L512 410.176 184.248 82.424 82.424 184.248 410.168 512l-327.744 327.752 101.824 101.824L512 613.824l327.752 327.752 101.824-101.824L613.832 512z"
-                    fill="#cdcdcd" p-id="3015"></path></svg>
-              </span>
-            </span>
-            <div slot="content" class="content">
-              <div class="edit-l">
-                <div style="width: 100px;height: 100px;border: 1px solid #ccc;margin-bottom: 20px;overflow: hidden;">
-                  <div class="show-preview"
-                       :style="{'width': previews.w + 'px','height': previews.h + 'px','overflow': 'hidden','zoom':option.zoom}">
-                    <div :style="previews.div">
-                      <img :src="option.img"
-                           :style="previews.img"
-                      >
-                    </div>
-                  </div>
-                </div>
-                <div style="padding: 10px 0 ">头像预览</div>
-                <div class="btn">
-                  <a href="javascript:;">重新选择</a>
-                  <input type="file" value="上传头像" @change="uploadImg($event)"></div>
-              </div>
-              <div class="edit-r">
-                <div>
-                  <div class="big" id="cropper-target" v-if="option.img">
-                    <vueCropper
-                      :img="option.img"
-                      @realTime="realTime"
-                      ref="cropper"
-                      :outputSize="example2.size"
-                      :info="example2.info"
-                      :canScale="example2.canScale"
-                      :autoCrop="example2.autoCrop"
-                      :autoCropWidth="example2.width"
-                      :autoCropHeight="example2.height"
-                      :fixed="example2.fixed"
-                    ></vueCropper>
-                  </div>
-                </div>
-
-              </div>
-              <div class="bootom-btn pa">
-                <my-button style="width: 140px;height: 40px;line-height: 40px"
-                          text="取消"
-                          @btnClick="editAvatarShow=false">
-                </my-button>
-                <my-button style="width: 140px;height: 40px;line-height: 40px"
-                          text="确定"
-                          classStyle="main-btn"
-                          @btnClick="cropper">
-                </my-button>
-              </div>
-            </div>
-          </y-shelf>
-        </div>
+        <el-form
+          ref="form"
+          v-loading="formLoading"
+          :data="form"
+          element-loading-text="加载中..."
+          :model="form"
+          label-width="120px"
+        >
+          <el-input v-model="form.id" type="hidden"/>
+          <el-form-item label="头像">
+            <!--        <img :src="form.icon" width="60" height="60" alt="#">-->
+            <pan-thumb :image="form.icon"/>
+            <el-button type="primary" icon="upload" style="position: absolute;bottom: 15px;margin-left: 40px;"
+                       @click="toggleShow">
+              上传头像
+            </el-button>
+            <image-cropper
+              v-model="show"
+              field="multipartFile"
+              :width="300"
+              :height="300"
+              :url="url"
+              :headers="headers"
+              img-format="png"
+              @crop-success="cropSuccess"
+              @crop-upload-success="cropUploadSuccess"
+              @crop-upload-fail="cropUploadFail"
+            />
+          </el-form-item>
+          <el-form-item label="账号">
+            <el-input v-model="form.username" :disabled="true"/>
+          </el-form-item>
+          <el-form-item label="邮箱">
+            <el-input v-model="form.email"/>
+          </el-form-item>
+          <el-form-item label="昵称">
+            <el-input v-model="form.nickName"/>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="form.note"/>
+          </el-form-item>
+          <el-form-item label="创建时间">
+            <el-input v-model="form.createTime" :disabled="true"/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" >保存</el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </y-shelf>
   </div>
 </template>
 <script>
-import MyButton from '@/components/myButton'
-// import { upload } from '@/api/index'
 import YShelf from '@/components/shelf'
-import vueCropper from 'vue-cropper'
-import { mapGetters } from 'vuex'
-import { getStore } from '@/utils/storage'
+import PanThumb from '@/components/PanThumb'
+import ImageCropper from 'vue-image-crop-upload'
+import { getUserDetail } from '@/api/user'
+import { getCookie } from '@/utils/auth'
 
 export default {
   data () {
     return {
-      imgSrc: '',
-      editAvatarShow: false,
-      cropContext: '',
-      cropperImg: '',
-      previews: {},
-      option: {
-        img: '',
-        zoom: 0
+      show: false,
+      formLoading: true,
+      url: process.env.VUE_APP_BASE_SERVER + '/upload',
+      headers: {
+        Authorization: 'Bearer ' + getCookie('SECOND_HAND_USER_TOKEN')
       },
-      fixedNumber: [1, 1],
-      example2: {
-        info: true,
-        size: 1,
-        canScale: false,
-        autoCrop: true,
-        // 只有自动截图开启 宽度高度才生效
-        autoCropWidth: 300,
-        autoCropHeight: 250,
-        // 开启宽度和高度比例
-        fixed: true
-      },
-      userId: '',
-      token: ''
+      form: {
+        id: '',
+        icon: '',
+        username: '',
+        email: '',
+        nickName: '',
+        note: '',
+        createTime: '',
+        status: ''
+      }
     }
   },
-  computed: {
-    ...mapGetters(['token', 'nickName', 'avatar'])
-  },
   methods: {
-    message (m) {
-      this.$message(m)
-    },
     messageSuccess (m) {
       this.$message({
         message: m,
@@ -129,6 +92,65 @@ export default {
     messageFail (m) {
       this.$message.error({
         message: m
+      })
+    },
+    toggleShow () {
+      this.show = !this.show
+    },
+    /**
+     *
+     * @param image
+     * @param field
+     */
+    cropSuccess (image, field) {
+      console.log('-------- crop success --------')
+      // this.image = image
+    },
+
+    /**
+     * 上传成功
+     * @param jsonData 服务器返回数据，已进行 JSON 转码
+     * @param field
+     */
+    cropUploadSuccess (jsonData, field) {
+      console.log('-------- upload success --------')
+      console.log(jsonData)
+      console.log('path: ', jsonData.data.path)
+      console.log('field: ' + field)
+      this.form.icon = jsonData.data.path
+      // 更新头像
+      // modifyIcon({
+      //   username: this.$store.getters.name,
+      //   path: jsonData.data.path
+      // }).then(response => {
+      //   this.$message({
+      //     message: response.message,
+      //     type: 'success'
+      //   })
+      //
+      //   // 更新 vuex 中的头像
+      //   this.$store.dispatch('user/setAvatar', jsonData.data.path)
+      // }).catch(() => {
+      // })
+    },
+
+    /**
+     * 上传失败
+     * @param status 服务器返回的失败状态码
+     * @param field
+     */
+    cropUploadFail (status, field) {
+      console.log('-------- upload fail --------')
+      console.log(status)
+      console.log('field: ' + field)
+      if (status === 401) {
+        this.messageFail('请重新登录~')
+      }
+    },
+    fetchData () {
+      getUserDetail().then(res => {
+        this.form = res.data
+        this.formLoading = false
       })
     },
     uploadImg (e) {
@@ -146,200 +168,17 @@ export default {
       reader.onload = (e) => {
         this.option.img = e.target.result
       }
-    },
-    cropper () {
-      this.message('上传中...')
-      if (this.option.img) {
-        this.$refs.cropper.getCropData((data) => {
-          this.imgSrc = data
-          upload({ userId: this.userId, token: this.token, imgData: data }).then(res => {
-            if (res.success === true) {
-              let path = res.result
-              let info = this.userInfo
-              info.file = path
-              this.RECORD_USERINFO({ info: info })
-              this.editAvatarShow = false
-              this.messageSuccess('上传成功')
-            } else {
-              this.messageFail(res.message)
-            }
-          })
-        })
-      } else {
-        this.messageFail('别玩我啊 先选照骗')
-      }
-    },
-    editAvatar () {
-      this.editAvatarShow = true
-    },
-    realTime (data) {
-      this.previews = data
-      let w = 100 / data.w
-      this.option.zoom = w
     }
   },
   created () {
-    this.userId = getStore('userId')
-    this.token = getStore('token')
+    this.fetchData()
   },
   components: {
-    MyButton,
     YShelf,
-    vueCropper
+    ImageCropper,
+    PanThumb
   }
 }
 </script>
 <style lang="scss" scoped>
-  @import "../../../assets/style/mixin";
-
-  .avatar-box {
-    height: 124px;
-    display: flex;
-    margin: 0 30px 30px;
-    border-bottom: #dadada solid 1px;
-    line-height: 30px;
-    display: flex;
-    align-items: center;
-
-    .img-box {
-      @include wh(80px);
-      border-radius: 5px;
-      overflow: hidden;
-    }
-
-    img {
-      display: block;
-      @include wh(100%)
-    }
-
-    .r-box {
-      margin-left: 20px;
-
-      h3 {
-        font-size: 18px;
-        font-weight: 400;
-        color: #333;
-      }
-    }
-  }
-
-  // 修改头像
-  .edit-avatar {
-    z-index: 9999;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    @include wh(100%);
-    background-color: rgba(0, 0, 0, .5);
-    @extend %block-center;
-
-    .content {
-      display: flex;
-      padding: 45px 100px 0;
-    }
-
-    > div {
-      box-sizing: content-box;
-      @include wh(700px, 500px);
-      margin: 0;
-    }
-
-    .btn {
-      width: 80px;
-      height: 30px;
-      margin-left: 10px;
-      position: relative;
-      text-align: center;
-      line-height: 30px;
-      text-shadow: rgba(255, 255, 255, .496094) 0 1px 0;
-      border: 1px solid #E6E6E6;
-      border-radius: 10px;
-
-      &:hover {
-      }
-
-      a {
-        color: #666;
-        display: block;
-        @include wh(100%);
-      }
-    }
-
-    input[type=file] {
-      position: absolute;
-      right: 0;
-      left: 0;
-      top: 0;
-      opacity: 0;
-      width: 80px;
-      height: 30px;
-      cursor: pointer;
-      box-sizing: border-box;
-      border: 15px solid #000;
-      overflow: hidden;
-    }
-
-    .edit-l {
-      width: 100px;
-      text-align: center;
-    }
-
-    .edit-r {
-      margin-left: 20px;
-      flex: 1;
-
-      > div {
-        border: 1px solid #ccc;
-        width: 320px;
-        height: 320px;
-      }
-    }
-  }
-
-  .image-container {
-    width: 100px;
-    height: 100px;
-    border: 1px solid #ccc;
-  }
-
-  .close {
-    position: absolute;
-    right: 10px;
-    top: 0;
-    bottom: 0;
-    padding: 0 10px;
-    @extend %block-center;
-
-    &:hover {
-      svg {
-        transition: all 1s;
-        transform: rotate(360deg);
-        transform-origin: 50% 50%;
-      }
-
-      path {
-        fill: #8a8a8a;
-      }
-    }
-  }
-
-  .big {
-    display: block;
-    width: 320px;
-    height: 320px;
-  }
-
-  .bootom-btn {
-    padding: 0 15px;
-    border-top: 1px solid #E6E6E6;
-    bottom: 0;
-    height: 60px;
-    right: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
 </style>
