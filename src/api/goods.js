@@ -14,6 +14,34 @@ export function getCart () {
   })
 }
 
+export function delCartChecked () {
+  return request({
+    url: '/cart',
+    method: 'delete'
+  })
+}
+
+export function cartEdit (productId, checked) {
+  return request({
+    url: '/cart/' + checked + '/' + productId,
+    method: 'put'
+  })
+}
+
+export function editCheckAll (data) {
+  return request({
+    url: '/cart/' + data,
+    method: 'post'
+  })
+}
+
+export function delCart (data) {
+  return request({
+    url: '/cart/' + data,
+    method: 'delete'
+  })
+}
+
 export function recommend (data) {
   return request({
     url: '/goods/recommend/' + data,

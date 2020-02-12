@@ -63,13 +63,13 @@ const actions = {
         if (item.productId === productId) {
           if (item.productNum >= 0) {
             flag = false
-            item.productNum += productNum
+            item.productNum = 1
           }
         }
       })
     }
     if (!cart.length || flag) {
-      goods.productNum = productNum
+      goods.productNum = 1
       goods.checked = '1'
       cart.push(goods)
     }
@@ -93,21 +93,21 @@ const actions = {
   showCart ({ commit }, { showCart }) {
     commit('SET_SHOW_CART', showCart)
   },
-  reduceCart ({ commit }, { productId }) {
-    let cart = state.cartList
-    cart.forEach((item, i) => {
-      if (item.productId === productId) {
-        if (item.productNum > 1) {
-          item.productNum--
-        } else {
-          cart.splice(i, 1)
-        }
-      }
-    })
-    commit('SET_CART_LIST', cart)
-    // 存入localStorage
-    setStore('buyCart', state.cartList)
-  },
+  // reduceCart ({ commit }, { productId }) {
+  //   let cart = state.cartList
+  //   cart.forEach((item, i) => {
+  //     if (item.productId === productId) {
+  //       if (item.productNum > 1) {
+  //         item.productNum--
+  //       } else {
+  //         cart.splice(i, 1)
+  //       }
+  //     }
+  //   })
+  //   commit('SET_CART_LIST', cart)
+  //   // 存入localStorage
+  //   setStore('buyCart', state.cartList)
+  // },
   editCart ({ commit }, { productId, productNum, checked }) {
     let cart = state.cartList
     if (productNum) {

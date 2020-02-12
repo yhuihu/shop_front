@@ -31,10 +31,8 @@
 </template>
 <script>
 import myButton from '@/components/myButton'
-// import { addCart } from '/api/goods.js'
-import { mapMutations, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { addCart } from '@/api/goods'
-// import { getStore } from '@/utils/storage'
 export default {
   props: {
     msg: {
@@ -45,40 +43,33 @@ export default {
     return {}
   },
   methods: {
-    ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
     openProduct (id) {
       window.open('//' + window.location.host + '/#/goodsDetails?productId=' + id)
     },
     addCart (id, price, name, img) {
       if (!this.showMoveImg) { // 动画是否在运动
-        if (this.token != null) { // 登录了 直接存在用户名下
-          addCart({ userId: this.userId, productId: id }).then(res => {
-            // 并不重新请求数据
-          })
+        if (this.token) { // 登录了 直接存在用户名下
+          addCart({ list: [{
+            productId: id
+          }] }).then(() => {
+            this.$store.dispatch('cart/addCart', {
+              productId: id,
+              salePrice: price,
+              productName: name,
+              productImg: img
+            })
+          }).catch()
         }
-        this.$store.dispatch('cart/addCart', {
-          productId: id,
-          salePrice: price,
-          productName: name,
-          productImg: img
-        })
-        // 加入购物车动画
-        var dom = event.target
-        // 获取点击的坐标
-        let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
-        let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
-        // 需要触发
-        this.$store.dispatch('cart/addAnimation', { moveShow: true, elLeft: elLeft, elTop: elTop, img: img })
-        // this.ADD_ANIMATION({ moveShow: true, elLeft: elLeft, elTop: elTop, img: img })
         if (!this.showCart) {
           this.$store.dispatch('cart/showCart', { showCart: true })
-          // this.SHOW_CART({ showCart: true })
         }
       }
     }
   },
   computed: {
-    ...mapState(['login', 'showMoveImg', 'showCart'])
+    ...mapGetters([
+      'token', 'showMoveImg', 'showCart'
+    ])
   },
   created () {
   },

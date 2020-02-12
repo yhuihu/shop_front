@@ -47,7 +47,7 @@
             <el-input v-model="form.createTime" :disabled="true"/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" >保存</el-button>
+            <el-button type="primary" @click="submitForm">保存</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -58,7 +58,7 @@
 import YShelf from '@/components/shelf'
 import PanThumb from '@/components/PanThumb'
 import ImageCropper from 'vue-image-crop-upload'
-import { getUserDetail } from '@/api/user'
+import { getUserDetail, updateInformation } from '@/api/user'
 import { getCookie } from '@/utils/auth'
 
 export default {
@@ -104,7 +104,6 @@ export default {
      */
     cropSuccess (image, field) {
       console.log('-------- crop success --------')
-      // this.image = image
     },
 
     /**
@@ -140,11 +139,10 @@ export default {
      * @param field
      */
     cropUploadFail (status, field) {
-      console.log('-------- upload fail --------')
-      console.log(status)
-      console.log('field: ' + field)
       if (status === 401) {
         this.messageFail('请重新登录~')
+      } else {
+        this.messageFail('请稍后重试~')
       }
     },
     fetchData () {
@@ -153,21 +151,23 @@ export default {
         this.formLoading = false
       })
     },
-    uploadImg (e) {
-      var file = e.target.files[0]
-      if (file.size > 10485760) {
-        this.messageFail('图片大小不得超过10Mb')
-        return false
+    submitForm () {
+      this.formLoading = true
+      const params = {
+        icon: this.form.icon,
+        username: this.form.username,
+        email: this.form.email,
+        nickName: this.form.nickName,
+        note: this.form.note
       }
-      if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
-        this.messageFail('图片类型仅支持.gif,jpeg,jpg,png,bmp')
-        return false
-      }
-      var reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = (e) => {
-        this.option.img = e.target.result
-      }
+      updateInformation(params).then(resp => {
+        this.messageSuccess(resp.message)
+        if (resp === 20000) {
+          setTimeout(function () {
+            window.location.reload()
+          }, 2000)
+        }
+      }).catch().finally(() => { this.formLoading = false })
     }
   },
   created () {

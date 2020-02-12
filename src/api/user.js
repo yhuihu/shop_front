@@ -22,6 +22,14 @@ export function getUserDetail () {
   })
 }
 
+export function updateInformation (data) {
+  return request({
+    url: '/profile/update',
+    method: 'post',
+    data
+  })
+}
+
 export function logout () {
   return request({
     url: '/user/logout',
