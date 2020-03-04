@@ -12,6 +12,10 @@
       :on-success="insertImage"
       :before-upload="beforeUpload"
       :on-error="showError"
+      :data="{
+        token: this.uploadToken,
+        key: this.uploadKey
+      }"
       style="display:none">
     </Upload1>
   </div>
@@ -34,6 +38,7 @@ import 'tinymce/plugins/paste'
 import 'tinymce/plugins/preview'
 import 'tinymce/plugins/fullscreen'
 import { Upload } from 'iview'
+import { uploadToken } from '@/api/user'
 export default {
   components: {
     Editor,
@@ -60,8 +65,11 @@ export default {
   },
   data () {
     return {
-      uploadUrl: process.env.VUE_APP_BASE_SERVER + '/upload',
+      uploadUrl: 'http://upload-z2.qiniu.com/',
+      // uploadUrl: process.env.VUE_APP_BASE_SERVER + '/upload',
       isLoad: false,
+      uploadToken: '',
+      uploadKey: '',
       // 初始化配置
       init: {
         browser_spellcheck: true, // 拼写检查
@@ -110,19 +118,41 @@ export default {
       this.myValue = ''
     },
     insertImage (res, file) {
-      const src = res.data.path // 图片存储地址
-      console.log(src)
-      tinymce.execCommand('mceInsertContent', false, `<img src=${src}>`)
+      // const src = res.data.path // 图片存储地址
+      console.log(res)
+      tinymce.execCommand('mceInsertContent', false, `<img src=${'http://cloud.yhhu.xyz/' + res.key}>`)
       this.$root.$message.success('图片上传完成')
       this.isLoad = false
     },
-    beforeUpload () {
+    async beforeUpload () {
       this.$root.$message.success('图片上传中...')
+      if (!this.uploadToken) {
+        await uploadToken().then(res => {
+          if (res.code === 20000) {
+            this.uploadToken = res.message
+            let date = new Date()
+            this.uploadKey = this.getuuid() + date.getDate()
+          }
+        })
+      }
       this.isLoad = true
     },
     showError () {
       this.$root.$message.error('图片上传出现错误!')
       this.isLoad = false
+    },
+    getuuid () {
+      var s = []
+      var hexDigits = '0123456789abcdef'
+      for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
+      }
+      s[14] = '4' // bits 12-15 of the time_hi_and_version field to 0010
+      s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1) // bits 6-7 of the clock_seq_hi_and_reserved to 01
+      s[8] = s[13] = s[18] = s[23] = '-'
+
+      var uuid = s.join('')
+      return uuid
     }
   },
   watch: {

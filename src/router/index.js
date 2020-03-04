@@ -55,6 +55,11 @@ const routes = [
     component: () => import('@/view/cart/cart')
   },
   {
+    path: '/checkout',
+    name: 'checkout',
+    component: () => import('@/view/cart/checkout')
+  },
+  {
     path: '/user',
     name: 'user',
     component: () => import('@/view/user/user'),
@@ -91,6 +96,10 @@ const routes = [
         component: () => import('@/view/user/children/addressList')
       }
     ]
+  },
+  {
+    path: '*',
+    redirect: '/home'
   }
 ]
 

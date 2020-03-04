@@ -18,24 +18,30 @@
                        @click="toggleShow">
               上传头像
             </el-button>
-            <image-cropper
-              v-model="show"
-              field="multipartFile"
-              :width="300"
-              :height="300"
-              :url="url"
-              :headers="headers"
-              img-format="png"
-              @crop-success="cropSuccess"
-              @crop-upload-success="cropUploadSuccess"
-              @crop-upload-fail="cropUploadFail"
-            />
+            <el-dialog
+              title="修改头像"
+              :visible.sync="show"
+              width="700px">
+              <icon-upload ref="child" :Options="cropperOption" :Name="cropperName" @uploadImgSuccess="handleUploadSuccess"></icon-upload>
+            </el-dialog>
+<!--            <image-cropper-->
+<!--              v-model="show"-->
+<!--              field="multipartFile"-->
+<!--              :width="300"-->
+<!--              :height="300"-->
+<!--              :url="url"-->
+<!--              :headers="headers"-->
+<!--              img-format="png"-->
+<!--              @crop-success="cropSuccess"-->
+<!--              @crop-upload-success="cropUploadSuccess"-->
+<!--              @crop-upload-fail="cropUploadFail"-->
+<!--            />-->
           </el-form-item>
           <el-form-item label="账号">
             <el-input v-model="form.username" :disabled="true"/>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input v-model="form.email"/>
+            <el-input v-model="form.email" :disable="true"/>
           </el-form-item>
           <el-form-item label="昵称">
             <el-input v-model="form.nickName"/>
@@ -57,10 +63,9 @@
 <script>
 import YShelf from '@/components/shelf'
 import PanThumb from '@/components/PanThumb'
-import ImageCropper from 'vue-image-crop-upload'
 import { getUserDetail, updateInformation } from '@/api/user'
 import { getCookie } from '@/utils/auth'
-
+import iconUpload from '@/components/icon-upload'
 export default {
   data () {
     return {
@@ -79,6 +84,22 @@ export default {
         note: '',
         createTime: '',
         status: ''
+      },
+      cropperName: 'icon',
+      cropperOption: {
+        img: '',
+        size: 1,
+        full: false, // 新增输出原图比例截图 props名full
+        outputType: 'png',
+        canMove: true,
+        original: false,
+        canMoveBox: true,
+        autoCrop: true,
+        autoCropWidth: 300,
+        autoCropHeight: 300,
+        fixedBox: false,
+        centerBox: false,
+        high: true
       }
     }
   },
@@ -96,6 +117,11 @@ export default {
     },
     toggleShow () {
       this.show = !this.show
+      this.cropperOption.img = this.form.icon
+    },
+    handleUploadSuccess (data) {
+      this.show = false
+      this.form.icon = data
     },
     /**
      *
@@ -175,8 +201,8 @@ export default {
   },
   components: {
     YShelf,
-    ImageCropper,
-    PanThumb
+    PanThumb,
+    iconUpload
   }
 }
 </script>

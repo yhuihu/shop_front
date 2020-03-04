@@ -14,6 +14,10 @@
                        list-type="picture-card"
                        :limit="5"
                        :file-list="imageList"
+                       :data="{
+                          token: this.uploadToken,
+                          key: this.uploadKey
+                        }"
                        :on-exceed="overUpload"
                        :before-upload="beforeUpload"
                        :on-success="imagesUploadSuccess"
@@ -61,6 +65,7 @@ import TinymceEditor from '@/components/tinymceEditor'
 import YShelf from '@/components/shelf'
 import { getAllClassification } from '@/api/classification'
 import { addGoods, getMyGoodsDetail, updateMyGoods } from '@/api/goods'
+import { uploadToken } from '@/api/user'
 export default {
   components: {
     TinymceEditor,
@@ -92,8 +97,11 @@ export default {
       }
     }
     return {
-      uploadUrl: process.env.VUE_APP_BASE_SERVER + '/upload',
+      uploadUrl: 'http://upload-z2.qiniu.com/',
+      // uploadUrl: process.env.VUE_APP_BASE_SERVER + '/upload',
       goodsId: '',
+      uploadToken: '',
+      uploadKey: '',
       classificationName: [],
       dialogImageUrl: '',
       dialogVisible: false,
@@ -168,7 +176,7 @@ export default {
         this.$root.$message.error('数据初始化失败~请稍后重试')
       }
     },
-    beforeUpload (file) {
+    async beforeUpload (file) {
       let arr = ['jpg', 'jpeg', 'png', 'bmp', 'JPG', 'JPEG', 'PNG', 'BMP']
       const target = file.name.substring(file.name.lastIndexOf('.') + 1)
       const isImg = arr.includes(target)
@@ -179,11 +187,23 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传图片大小不能超过 2MB!')
       }
-      return isImg && isLt2M
+      if (isImg && isLt2M) {
+        if (!this.uploadToken) {
+          await uploadToken().then(res => {
+            if (res.code === 20000) {
+              this.uploadToken = res.message
+              let date = new Date()
+              this.uploadKey = this.getuuid() + date.getDate()
+            }
+          })
+        }
+      } else {
+        return false
+      }
     },
     imagesUploadSuccess (res, file) {
       if (file.response) {
-        this.form.fileList.push(res.data.path)
+        this.form.fileList.push('http://cloud.yhhu.xyz/' + res.key)
       }
     },
     handleData (data) {
@@ -277,6 +297,19 @@ export default {
       if (!this.flag) {
         this.classificationName.splice(this.classificationName.length - 1, 1)
       }
+    },
+    getuuid () {
+      var s = []
+      var hexDigits = '0123456789abcdef'
+      for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
+      }
+      s[14] = '4' // bits 12-15 of the time_hi_and_version field to 0010
+      s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1) // bits 6-7 of the clock_seq_hi_and_reserved to 01
+      s[8] = s[13] = s[18] = s[23] = '-'
+
+      var uuid = s.join('')
+      return uuid
     }
   },
   mounted () {

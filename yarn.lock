@@ -1597,7 +1597,7 @@ babel-plugin-dynamic-import-node@^2.2.0, babel-plugin-dynamic-import-node@^2.3.0
   dependencies:
     object.assign "^4.1.0"
 
-babel-runtime@6.x, babel-runtime@^6.11.6:
+babel-runtime@6.x:
   version "6.26.0"
   resolved "https://registry.npm.taobao.org/babel-runtime/download/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
@@ -6892,6 +6892,11 @@ q@^1.1.2:
   resolved "https://registry.npm.taobao.org/q/download/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
+qiniu-js@^2.5.5:
+  version "2.5.5"
+  resolved "https://registry.npm.taobao.org/qiniu-js/download/qiniu-js-2.5.5.tgz?cache=0&sync_timestamp=1571819746863&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fqiniu-js%2Fdownload%2Fqiniu-js-2.5.5.tgz#77d295f222620f9377d6148f3f757d189a1e4977"
+  integrity sha1-d9KV8iJiD5N31hSPP3V9GJoeSXc=
+
 qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.npm.taobao.org/qs/download/qs-6.7.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fqs%2Fdownload%2Fqs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
@@ -8574,6 +8579,11 @@ vm-browserify@^1.0.1:
   resolved "https://registry.npm.taobao.org/vm-browserify/download/vm-browserify-1.1.2.tgz?cache=0&sync_timestamp=1572870717730&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvm-browserify%2Fdownload%2Fvm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha1-eGQcSIuObKkadfUR56OzKobl3aA=
 
+vue-cropper@^0.4.8:
+  version "0.4.9"
+  resolved "https://registry.npm.taobao.org/vue-cropper/download/vue-cropper-0.4.9.tgz#fe650f32516ecf29014bbd4a9079191c8dc5a5ae"
+  integrity sha1-/mUPMlFuzykBS71KkHkZHI3Fpa4=
+
 vue-eslint-parser@^5.0.0:
   version "5.0.0"
   resolved "https://registry.npm.taobao.org/vue-eslint-parser/download/vue-eslint-parser-5.0.0.tgz?cache=0&sync_timestamp=1573306368916&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-eslint-parser%2Fdownload%2Fvue-eslint-parser-5.0.0.tgz#00f4e4da94ec974b821a26ff0ed0f7a78402b8a1"
@@ -8590,13 +8600,6 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.npm.taobao.org/vue-hot-reload-api/download/vue-hot-reload-api-2.3.4.tgz?cache=0&sync_timestamp=1568190386192&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-hot-reload-api%2Fdownload%2Fvue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha1-UylVzB6yCKPZkLOp+acFdGV+CPI=
-
-vue-image-crop-upload@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.npm.taobao.org/vue-image-crop-upload/download/vue-image-crop-upload-2.5.0.tgz#2dcf499e5b4944bc5077fc30b5f24d5e977f313c"
-  integrity sha1-Lc9JnltJRLxQd/wwtfJNXpd/MTw=
-  dependencies:
-    babel-runtime "^6.11.6"
 
 vue-infinite-scroll@^2.0.2:
   version "2.0.2"

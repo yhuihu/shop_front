@@ -58,3 +58,10 @@ export function deleteAddress (data) {
     method: 'delete'
   })
 }
+
+export function uploadToken () {
+  return request({
+    url: '/upload',
+    method: 'get'
+  })
+}
