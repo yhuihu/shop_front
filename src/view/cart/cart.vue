@@ -14,7 +14,6 @@
               <div class="cart-table-title">
                 <span class="name">商品信息</span>
                 <span class="operation">操作</span>
-                <span class="num">数量</span>
                 <span class="price1">单价</span>
               </div>
               <!--列表-->

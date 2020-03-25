@@ -3,6 +3,7 @@ import { getCookie, setCookie, removeCookie } from '@/utils/auth'
 
 const state = {
   token: getCookie('SECOND_HAND_USER_TOKEN'),
+  id: getCookie('SECOND_HAND_USER_ID'),
   name: '',
   avatar: '',
   nickName: ''
@@ -20,6 +21,9 @@ const mutations = {
   },
   SET_NICK_NAME: (state, nickName) => {
     state.nickName = nickName
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   }
 }
 
@@ -49,6 +53,8 @@ const actions = {
         if (response.code !== 20000) {
           reject(response.message)
         } else {
+          commit('SET_ID', response.data.id)
+          setCookie('SECOND_HAND_USER_ID', response.data.id)
           commit('SET_NAME', response.data.name)
           commit('SET_AVATAR', response.data.avatar)
           commit('SET_NICK_NAME', response.data.nickName)
@@ -66,6 +72,7 @@ const actions = {
       logout().then(() => {
         commit('SET_TOKEN', '')
         removeCookie('SECOND_HAND_USER_TOKEN')
+        removeCookie('SECOND_HAND_USER_ID')
         resolve()
       }).catch(error => {
         reject(error)
@@ -78,6 +85,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       removeCookie('SECOND_HAND_USER_TOKEN')
+      removeCookie('SECOND_HAND_USER_ID')
       resolve()
     })
   },
@@ -86,6 +94,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_AVATAR', avatarUrl)
       removeCookie('SECOND_HAND_USER_TOKEN')
+      removeCookie('SECOND_HAND_USER_ID')
       resolve()
     })
   }

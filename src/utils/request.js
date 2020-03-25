@@ -60,7 +60,7 @@ service.interceptors.response.use(
       }).catch(() => {
       }).finally(() => {
         store.dispatch('user/resetToken').then(() => {
-          location.reload()
+          this.$router.push({ path: '/login' })
         })
       })
     } else {

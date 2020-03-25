@@ -46,7 +46,7 @@
               <div class="cart-table-title">
                 <span class="name">商品信息</span>
                 <span class="subtotal">小计</span>
-<!--                <span class="num">数量</span>-->
+                <span class="num">支付方式</span>
                 <span class="price">单价</span>
               </div>
               <!--列表-->
@@ -74,10 +74,12 @@
                       <div>
                         <!--总价格-->
                         <div class="subtotal" style="font-size: 14px">¥ {{item.salePrice * item.productNum}}</div>
-                        <!--数量-->
-<!--                        <div class="item-cols-num">-->
-<!--                          <span v-text="item.productNum"></span>-->
-<!--                        </div>-->
+                        <!--支付方式-->
+                        <div class="item-cols-num">
+                          <el-select v-model="item.payType">
+                            <el-option label="货到付款" value="2"></el-option>
+                          </el-select>
+                        </div>
                         <!--价格-->
                         <div class="price">¥ {{item.salePrice}}</div>
                       </div>
@@ -134,12 +136,13 @@
   </div>
 </template>
 <script>
-import { addressUpdate, addressAdd, addressDel, productDet, submitOrder, getCart } from '@/api/goods'
+import { productDet, getCart } from '@/api/goods'
+import { getAddress, addAddress, deleteAddress } from '@/api/user'
+import { addOrder } from '@/api/order'
 import YShelf from '@/components/shelf'
 import YButton from '@/components/myButton'
 import YPopup from '@/components/popup'
 import YHeader from '@/common/header'
-import { getAddress } from '@/api/user'
 export default {
   data () {
     return {
@@ -157,6 +160,13 @@ export default {
         streetName: '',
         isDefault: false
       },
+      options: [{
+        value: '1',
+        label: '线上支付'
+      }, {
+        value: '2',
+        label: '货到付款'
+      }],
       userName: '',
       tel: '',
       streetName: '',
@@ -204,14 +214,38 @@ export default {
     _getCartList () {
       getCart().then(res => {
         if (res.code === 20000) {
-          this.cartList = res.result
+          this.cartList = res.data
+          this.cartList.forEach(item => {
+            item.payType = '货到付款'
+          })
         }
+        console.log(this.cartList)
       })
+    },
+    initAddress (data) {
+      let flag = false
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].isDefault) {
+          this.addressId = data[i].addressId
+          this.userName = data[i].userName
+          this.tel = data[i].tel
+          this.streetName = data[i].streetName
+          flag = true
+          break
+        }
+      }
+      if (!flag) {
+        this.addressId = data[0].addressId
+        this.userName = data[0].userName
+        this.tel = data[0].tel
+        this.streetName = data[0].streetName
+      }
     },
     _addressList () {
       getAddress().then(res => {
         let data = res.data
         if (data.length) {
+          this.initAddress(data)
           this.addList = res.data
           this.addressId = res.data[0].addressId || '1'
         } else {
@@ -220,22 +254,36 @@ export default {
       })
     },
     _addressUpdate (params) {
-      addressUpdate(params).then(res => {
-        this._addressList()
+      addAddress(params).then(res => {
+        let data = res.data
+        if (data.length) {
+          this.initAddress(data)
+          this.addList = res.data
+          this.addressId = res.data[0].addressId || '1'
+        } else {
+          this.addList = []
+        }
       })
     },
     _addressAdd (params) {
-      addressAdd(params).then(res => {
-        if (res.success === true) {
-          this._addressList()
+      addAddress(params).then(res => {
+        let data = res.data
+        if (data.length) {
+          this.initAddress(data)
+          this.addList = res.data
+          this.addressId = res.data[0].addressId || '1'
         } else {
-          this.message(res.message)
+          this.addList = []
         }
       })
     },
     _addressDel (params) {
-      addressDel(params).then(res => {
-        this._addressList()
+      deleteAddress(params).then(res => {
+        if (res.code === 20000) {
+          this._addressList()
+        } else {
+          this.message('删除失败')
+        }
       })
     },
     // 提交订单后跳转付款页面
@@ -255,21 +303,24 @@ export default {
         this.submit = false
         return
       }
-      for (var i = 0; i < this.cartList.length; i++) {
+      for (let i = 0; i < this.cartList.length; i++) {
         if (this.cartList[i].checked === '1') {
-          array.push(this.cartList[i])
+          let target = {
+            goodsId: this.cartList[i].productId,
+            payType: 2
+          }
+          array.push(target)
         }
       }
       let params = {
-        tel: this.tel,
-        userName: this.userName,
-        streetName: this.streetName,
-        goodsList: array,
-        orderTotal: this.orderTotal
+        buyerPhone: this.tel,
+        buyerName: this.userName,
+        buyerAddress: this.streetName,
+        orderDetails: array
       }
-      submitOrder(params).then(res => {
-        if (res.success === true) {
-          this.payment(res.result)
+      addOrder(params).then(res => {
+        if (res.code === 20000) {
+          this.payment(res.data)
         } else {
           this.message(res.message)
           this.submitOrder = '提交订单'
@@ -281,7 +332,7 @@ export default {
     payment (orderId) {
       // 需要拿到地址id
       this.$router.push({
-        path: '/order/payment',
+        path: '/payment',
         query: {
           'orderId': orderId
         }

@@ -1,8 +1,5 @@
 <template>
   <div>
-    <s-header>
-      <div slot="nav"></div>
-    </s-header>
     <div class="goods">
       <div class="nav-subs">
         <div class="nav-sub-bgs"></div>
@@ -86,7 +83,6 @@ import { getSearch } from '@/api/goods.js'
 import { getAllClassification } from '@/api/classification'
 import MallGoods from '@/components/mallGoods'
 import MyButton from '@/components/myButton'
-import SHeader from '@/common/header'
 
 export default {
   data () {
@@ -208,8 +204,7 @@ export default {
   },
   components: {
     MallGoods,
-    MyButton,
-    SHeader
+    MyButton
   }
 }
 </script>

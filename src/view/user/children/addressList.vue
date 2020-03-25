@@ -103,7 +103,6 @@ export default {
       })
     },
     _addressUpdate (params) {
-      console.log('in')
       addAddress(params).then(res => {
         let data = res.data
         if (data.length) {

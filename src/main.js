@@ -4,11 +4,20 @@ import router from './router'
 import { getCookie } from '@/utils/auth'
 import 'element-ui/lib/theme-chalk/index.css'
 import {
+  Avatar,
   Cascader,
   Button,
   ButtonGroup,
   Pagination,
   Checkbox,
+  Container,
+  Main,
+  Aside,
+  Header,
+  Menu,
+  MenuItem,
+  Submenu,
+  Footer,
   Icon,
   Autocomplete,
   Loading,
@@ -37,10 +46,19 @@ import {
 import VueLazyLoad from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
 import store from './store'
+Vue.use(Avatar)
 Vue.use(Button)
 Vue.use(ButtonGroup)
 Vue.use(Pagination)
 Vue.use(Checkbox)
+Vue.use(Container)
+Vue.use(Main)
+Vue.use(Header)
+Vue.use(Aside)
+Vue.use(Menu)
+Vue.use(MenuItem)
+Vue.use(Submenu)
+Vue.use(Footer)
 Vue.use(Icon)
 Vue.use(Autocomplete)
 Vue.use(Steps)
@@ -76,12 +94,18 @@ Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 Vue.prototype.$messageBox = MessageBox
 Vue.config.productionTip = false
+Vue.prototype.$websocket = null
 
-Vue.config.productionTip = false
-
-const whiteList = ['/', '/home', '/goods', '/test', '/login', '/register', '/goodsDetails', '/thanks', '/search', '/refreshsearch', '/refreshgoods'] // 不需要登陆的页面
+const whiteList = ['/', '/message', '/home', '/goods', '/login', '/register', '/goodsDetails', '/search', '/refreshsearch', '/refreshgoods', '/follow/detail'] // 不需要登陆的页面
 router.beforeEach(function (to, from, next) {
-  if (whiteList.indexOf(to.path) !== -1) { // 白名单
+  if (to.path === '/login' || to.path === '/register') {
+    if (getCookie('SECOND_HAND_USER_TOKEN') !== undefined) {
+      next('/home')
+    }
+    next()
+  } else if (to.path.startsWith('/follow/detail')) {
+    next()
+  } else if (whiteList.indexOf(to.path) !== -1) { // 白名单
     next()
   } else {
     if (getCookie('SECOND_HAND_USER_TOKEN') !== undefined) {
@@ -93,5 +117,11 @@ router.beforeEach(function (to, from, next) {
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  closed () {
+    // 关闭 websocket
+    if (Vue.prototype.$webscoket !== null) {
+      Vue.prototype.$webscoket.close()
+    }
+  }
 }).$mount('#app')

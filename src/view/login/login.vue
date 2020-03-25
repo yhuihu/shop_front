@@ -165,9 +165,11 @@ export default {
                 path: '/'
               })
             }
+            window.location.reload()
           }).catch(() => {
             this.$store.dispatch('user/logout')
           })
+          // this.$store.dispatch('chat/initChat')
         } else {
           return false
         }
@@ -211,6 +213,7 @@ export default {
       background-size: 100px;
       min-height: 800px;
       min-width: 630px;
+      margin-top: 100px;
     }
   }
 

@@ -65,3 +65,18 @@ export function uploadToken () {
     method: 'get'
   })
 }
+
+export function sendEmail (data) {
+  return request({
+    url: '/email/' + data,
+    method: 'post'
+  })
+}
+
+export function register (data) {
+  return request({
+    url: '/profile/register',
+    method: 'post',
+    data
+  })
+}

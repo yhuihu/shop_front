@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+
 export function addCart (data) {
   return request({
     url: '/cart',
@@ -39,6 +40,14 @@ export function delCart (data) {
   return request({
     url: '/cart/' + data,
     method: 'delete'
+  })
+}
+
+export function getGoodsLogs (data) {
+  return request({
+    url: '/goods/logs',
+    method: 'get',
+    params: data
   })
 }
 

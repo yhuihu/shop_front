@@ -12,7 +12,6 @@
         >
           <el-input v-model="form.id" type="hidden"/>
           <el-form-item label="头像">
-            <!--        <img :src="form.icon" width="60" height="60" alt="#">-->
             <pan-thumb :image="form.icon"/>
             <el-button type="primary" icon="upload" style="position: absolute;bottom: 15px;margin-left: 40px;"
                        @click="toggleShow">
@@ -24,18 +23,6 @@
               width="700px">
               <icon-upload ref="child" :Options="cropperOption" :Name="cropperName" @uploadImgSuccess="handleUploadSuccess"></icon-upload>
             </el-dialog>
-<!--            <image-cropper-->
-<!--              v-model="show"-->
-<!--              field="multipartFile"-->
-<!--              :width="300"-->
-<!--              :height="300"-->
-<!--              :url="url"-->
-<!--              :headers="headers"-->
-<!--              img-format="png"-->
-<!--              @crop-success="cropSuccess"-->
-<!--              @crop-upload-success="cropUploadSuccess"-->
-<!--              @crop-upload-fail="cropUploadFail"-->
-<!--            />-->
           </el-form-item>
           <el-form-item label="账号">
             <el-input v-model="form.username" :disabled="true"/>
@@ -45,6 +32,14 @@
           </el-form-item>
           <el-form-item label="昵称">
             <el-input v-model="form.nickName"/>
+          </el-form-item>
+          <el-form-item label="地区">
+            <el-cascader
+              size="large"
+              :options="options"
+              v-model="selectedOptions"
+              @change="handleChange">
+            </el-cascader>
           </el-form-item>
           <el-form-item label="备注">
             <el-input v-model="form.note"/>
@@ -66,9 +61,12 @@ import PanThumb from '@/components/PanThumb'
 import { getUserDetail, updateInformation } from '@/api/user'
 import { getCookie } from '@/utils/auth'
 import iconUpload from '@/components/icon-upload'
+import { provinceAndCityData, CodeToText, TextToCode } from 'element-china-area-data'
 export default {
   data () {
     return {
+      options: provinceAndCityData,
+      selectedOptions: ['110000', '110100'],
       show: false,
       formLoading: true,
       url: process.env.VUE_APP_BASE_SERVER + '/upload',
@@ -83,6 +81,7 @@ export default {
         nickName: '',
         note: '',
         createTime: '',
+        address: '',
         status: ''
       },
       cropperName: 'icon',
@@ -104,6 +103,13 @@ export default {
     }
   },
   methods: {
+    handleChange () {
+      let loc = ''
+      for (let i = 0; i < this.selectedOptions.length; i++) {
+        loc += CodeToText[this.selectedOptions[i]]
+      }
+      this.form.address = loc
+    },
     messageSuccess (m) {
       this.$message({
         message: m,
@@ -123,57 +129,13 @@ export default {
       this.show = false
       this.form.icon = data
     },
-    /**
-     *
-     * @param image
-     * @param field
-     */
-    cropSuccess (image, field) {
-      console.log('-------- crop success --------')
-    },
-
-    /**
-     * 上传成功
-     * @param jsonData 服务器返回数据，已进行 JSON 转码
-     * @param field
-     */
-    cropUploadSuccess (jsonData, field) {
-      console.log('-------- upload success --------')
-      console.log(jsonData)
-      console.log('path: ', jsonData.data.path)
-      console.log('field: ' + field)
-      this.form.icon = jsonData.data.path
-      // 更新头像
-      // modifyIcon({
-      //   username: this.$store.getters.name,
-      //   path: jsonData.data.path
-      // }).then(response => {
-      //   this.$message({
-      //     message: response.message,
-      //     type: 'success'
-      //   })
-      //
-      //   // 更新 vuex 中的头像
-      //   this.$store.dispatch('user/setAvatar', jsonData.data.path)
-      // }).catch(() => {
-      // })
-    },
-
-    /**
-     * 上传失败
-     * @param status 服务器返回的失败状态码
-     * @param field
-     */
-    cropUploadFail (status, field) {
-      if (status === 401) {
-        this.messageFail('请重新登录~')
-      } else {
-        this.messageFail('请稍后重试~')
-      }
-    },
-    fetchData () {
-      getUserDetail().then(res => {
+    async fetchData () {
+      await getUserDetail().then(res => {
         this.form = res.data
+        this.selectedOptions = []
+        let target = this.form.address.split('-')
+        this.selectedOptions.push(TextToCode[target[0]].code)
+        this.selectedOptions.push(TextToCode[target[0]][target[1]].code)
         this.formLoading = false
       })
     },
@@ -184,7 +146,8 @@ export default {
         username: this.form.username,
         email: this.form.email,
         nickName: this.form.nickName,
-        note: this.form.note
+        note: this.form.note,
+        address: this.form.address
       }
       updateInformation(params).then(resp => {
         this.messageSuccess(resp.message)

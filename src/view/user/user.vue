@@ -1,8 +1,5 @@
 <template>
   <div class="layout-container">
-    <y-header>
-      <div slot="nav"></div>
-    </y-header>
     <div class="w">
       <div class="content">
         <div class="account-sidebar">
@@ -31,7 +28,6 @@
 
 </template>
 <script>
-import YHeader from '@/common/header'
 import { mapGetters } from 'vuex'
 export default {
   data () {
@@ -39,6 +35,7 @@ export default {
       title: '我的订单',
       nav: [
         { name: '账户资料', path: 'information' },
+        { name: '我的关注', path: 'myFollow' },
         { name: '我的订单', path: 'orderList' },
         { name: '处理闲置物品', path: 'publishGoods' },
         { name: '管理闲置物品', path: 'myGoods' },
@@ -66,9 +63,6 @@ export default {
         this.title = item.name
       }
     })
-  },
-  components: {
-    YHeader
   },
   watch: {
     $route (to) {

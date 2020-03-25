@@ -1,23 +1,30 @@
 <template>
   <div class="gray-box">
     <div class="title">
-<!--      <h2>{{goodId}}</h2>-->
-      <h2><el-button-group>
-        <el-button icon="el-icon-goods" v-if="this.detailShow" @click="changeShow" type="info" disabled style="color: black">商品详情</el-button>
-        <el-button icon="el-icon-goods" v-else @click="changeShow" type="text">商品详情</el-button>
-        <el-button icon="el-icon-help" v-if="!this.detailShow" @click="changeShow" disabled type="info" style="color: black">讨论</el-button>
-        <el-button icon="el-icon-help" v-else @click="changeShow" type="text">讨论</el-button>
-      </el-button-group></h2>
+      <!--      <h2>{{goodId}}</h2>-->
+      <h2>
+        <el-button-group>
+          <el-button icon="el-icon-goods" v-if="this.detailShow" @click="changeShow" type="info" disabled
+                     style="color: black">商品详情
+          </el-button>
+          <el-button icon="el-icon-goods" v-else @click="changeShow" type="text">商品详情</el-button>
+          <el-button icon="el-icon-help" v-if="!this.detailShow" @click="changeShow" disabled type="info"
+                     style="color: black">讨论
+          </el-button>
+          <el-button icon="el-icon-help" v-else @click="changeShow" type="text">讨论</el-button>
+        </el-button-group>
+      </h2>
       <div>
         <slot name="right"/>
       </div>
     </div>
     <!--内容-->
+    <!--    TODO这里需要加入讨论区-->
     <div v-if="this.detailShow">
       <slot name="content"/>
     </div>
     <div v-else>
-      讨论区
+      <slot name="comment"/>
     </div>
   </div>
 </template>
@@ -48,6 +55,7 @@ export default {
     border: 1px solid #dcdcdc;
     border-color: rgba(0, 0, 0, .14);
     box-shadow: 0 3px 8px -6px rgba(0, 0, 0, .1);
+
     .title {
       padding-left: 30px;
       position: relative;
@@ -66,6 +74,7 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       h2 {
         font-size: 18px;
         font-weight: 400;

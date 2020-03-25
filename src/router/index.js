@@ -60,6 +60,26 @@ const routes = [
     component: () => import('@/view/cart/checkout')
   },
   {
+    path: '/payment',
+    name: 'checkout',
+    component: () => import('@/view/order/payment')
+  },
+  {
+    path: '/logs',
+    name: 'logs',
+    component: () => import('@/view/user/myLogs')
+  },
+  {
+    path: '/message',
+    name: 'message',
+    component: () => import('@/view/message/message')
+  },
+  {
+    path: '/follow/detail/:id',
+    name: 'follow',
+    component: () => import('@/view/user/followerDetail')
+  },
+  {
     path: '/user',
     name: 'user',
     component: () => import('@/view/user/user'),
@@ -69,6 +89,11 @@ const routes = [
         path: 'information',
         name: '账户资料',
         component: () => import('@/view/user/children/information')
+      },
+      {
+        path: 'myFollow',
+        name: '账户资料',
+        component: () => import('@/view/user/children/myFollow')
       },
       {
         path: 'orderList',

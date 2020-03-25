@@ -4,7 +4,7 @@
       <header class="w">
         <div class="w-box">
           <div class="nav-logo">
-            <h1 @click="changePage(-1)">
+            <h1>
               <router-link to="/" title="二手交易平台">X二手交易平台</router-link>
             </h1>
           </div>
@@ -22,8 +22,9 @@
               <el-button @click="handleIconClick" round style="margin-left: 5px" icon="el-icon-search">
                 搜索
               </el-button>
-              <router-link to="/goods"><a @click="changePage(2)">全部商品</a></router-link>
-              <router-link to="/thanks"><a @click="changePage(4)">捐赠</a></router-link>
+              <router-link to="/home"><a>首页</a></router-link>
+              <router-link to="/goods"><a>全部</a></router-link>
+              <router-link to="/goods"><a>消息</a></router-link>
             </div>
             <div class="nav-aside" ref="aside" :class="{fixed:st}">
               <div class="user pr">
@@ -42,6 +43,12 @@
                       </li>
                       <li>
                         <router-link to="/user/information">账号资料</router-link>
+                      </li>
+                      <li>
+                        <router-link to="/logs"><a>浏览日志</a></router-link>
+                      </li>
+                      <li>
+                        <router-link to="/user/myFollow"><a>我的关注</a></router-link>
                       </li>
                       <li>
                         <router-link to="/user/orderList">我的订单</router-link>
@@ -66,7 +73,8 @@
                    ref="positionMsg">
                 <router-link to="/cart"/>
                 <span class="cart-num">
-                  <i class="num" :class="{no:totalNum <= 0,move_in_cart:this.receiveInCart}">{{totalNum}}</i></span>
+                  <i class="num" :class="{no:totalNum <= 0,move_in_cart:this.receiveInCart}">{{totalNum}}</i>
+                </span>
                 <!--购物车显示块-->
                 <div class="nav-user-wrapper pa active" v-show="this.showCart">
                   <div class="nav-user-list">
@@ -118,27 +126,6 @@
           </div>
         </div>
       </header>
-      <slot name="nav">
-        <div class="nav-sub" :class="{fixed:st}">
-          <div class="nav-sub-bg"></div>
-          <div class="nav-sub-wrapper" :class="{fixed:st}">
-            <div class="w">
-              <ul class="nav-list2">
-                <li>
-                  <router-link to="/"><a @click="changGoods(-1)" :class="{active:choosePage===-1}">首页</a></router-link>
-                </li>
-                <li>
-                  <a @click="changGoods(-2)" :class="{active:choosePage===-2}">全部</a>
-                </li>
-                <li v-for="(item,i) in navList" :key="i">
-                  <a @click="changGoods(i, item)" :class="{active:i===choosePage}">{{item.picUrl}}</a>
-                </li>
-              </ul>
-              <div></div>
-            </div>
-          </div>
-        </div>
-      </slot>
     </div>
   </div>
 </template>
@@ -162,13 +149,12 @@ export default {
       input: '',
       choosePage: -1,
       searchResults: [],
-      timeout: null,
-      navList: []
+      timeout: null
     }
   },
   computed: {
     ...mapGetters([
-      'cartList', 'showCart', 'receiveInCart', 'token', 'nickName', 'avatar'
+      'cartList', 'showCart', 'receiveInCart', 'token', 'nickName', 'avatar', 'id'
     ]),
     // 计算数量
     totalNum () {
@@ -187,30 +173,6 @@ export default {
     }
   },
   methods: {
-    // 根据用户选择改变导航栏
-    changePage (v) {
-      this.choosePage = v
-    },
-    changGoods (v, item) {
-      this.changePage(v)
-      if (v === -1) {
-        this.$router.push({
-          path: '/'
-        })
-      } else if (v === -2) {
-        this.$router.push({
-          path: '/refreshGoods'
-        })
-      } else {
-        // 站内跳转
-        if (item.type === 1) {
-          window.location.href = item.fullUrl
-        } else {
-          // 站外跳转
-          window.open(item.fullUrl)
-        }
-      }
-    },
     // 购物车显示
     cartShowState (state) {
       this.$store.dispatch('cart/showCart', { showCart: state })
@@ -288,8 +250,57 @@ export default {
   },
   mounted () {
     if (this.token) {
-      this._getCartList()
-      this.$store.dispatch('user/getInfo')
+      let that = this
+      that._getCartList()
+      that.$store.dispatch('user/getInfo')
+      that.$store.dispatch('chat/initChat')
+      if ('WebSocket' in window) {
+        that.$root.$websocket = new WebSocket('ws://' + process.env.VUE_APP_BASE_SERVER
+          .replace('http://', '') + '/chat?token=' + this.token + '&id=' + this.id)
+        that.$root.$websocket.onmessage = function (res) {
+          let data = JSON.parse(res.data)
+          if (data.isMine === 0) {
+            // 别人发来的信息
+            let chatUserData = {
+              nickName: data.fromNickName,
+              userId: data.fromId,
+              icon: data.fromIcon,
+              createTime: data.createTime,
+              isRead: data.isRead
+            }
+            that.$store.dispatch('chat/addChatUser', chatUserData)
+            let chatData = {
+              id: data.fromId,
+              icon: data.fromIcon,
+              content: data.content,
+              contentType: data.contentType,
+              createTime: data.createTime,
+              isMine: 0
+            }
+            that.$store.dispatch('chat/addChatData', chatData)
+          } else if (data.isMine === 1) {
+            console.log('in')
+            // 自己发送的信息
+            let chatUserData = {
+              nickName: data.toNickName,
+              userId: data.toId,
+              icon: data.toIcon,
+              createTime: data.createTime,
+              isRead: data.isRead
+            }
+            that.$store.dispatch('chat/addChatUser', chatUserData)
+            let chatData = {
+              id: data.toId,
+              icon: data.toIcon,
+              content: data.content,
+              contentType: data.contentType,
+              createTime: data.createTime,
+              isMine: 1
+            }
+            that.$store.dispatch('chat/addChatData', chatData)
+          }
+        }
+      }
     } else {
       this.$store.dispatch('cart/initCart')
     }
@@ -425,11 +436,11 @@ export default {
       }
 
       a {
-        width: 110px;
+        width: 80px;
         color: #c8c8c8;
         display: block;
         font-size: 14px;
-        padding: 0 25px;
+        padding: 0 10px;
 
         &:hover {
           color: #fff;

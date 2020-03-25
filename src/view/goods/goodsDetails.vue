@@ -33,10 +33,12 @@
             </h6>
           </div>
           <div class="num">
-            <div>
-              <!--          TODO 卖家信息-->
-              卖家信息
+            <div style="float: left">
+              <a @click="toFollowDetail(product.userId)"><el-avatar :size="60" :src=product.icon></el-avatar></a>
             </div>
+            <div style="float:right;margin-left: 20px"><p>卖家：{{product.nickName}}</p>
+              <br>
+              <p>发货地址：{{product.address}}</p></div>
           </div>
           <div class="buy">
             <y-button text="加入购物车"
@@ -62,6 +64,9 @@
               该商品暂无内容数据
             </div>
           </div>
+          <div slot="comment">
+            <comment @reloadComment="reloadComment" :comments="commentData" :productId="product.id"></comment>
+          </div>
         </y-shelf>
       </div>
     </div>
@@ -69,11 +74,12 @@
 </template>
 <script>
 import { productDet, addCart } from '@/api/goods'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import YShelf from '@/components/goodsButton'
 import YButton from '@/components/myButton'
-import { getCookie } from '@/utils/auth'
 import SHeader from '@/common/header'
+import comment from '@/components/comment'
+import { getComment } from '@/api/comment'
 
 export default {
   data () {
@@ -84,15 +90,17 @@ export default {
       product: {
         salePrice: 0
       },
-      productNum: 1,
-      userId: ''
+      commentData: [],
+      productNum: 1
     }
   },
   components: {
-    YShelf, YButton, SHeader
+    YShelf, YButton, SHeader, comment
   },
   computed: {
-    ...mapState(['token', 'showMoveImg', 'showCart'])
+    ...mapGetters([
+      'token', 'showMoveImg', 'showCart'
+    ])
   },
   methods: {
     _productDet (productId) {
@@ -113,10 +121,10 @@ export default {
     },
     addCart (id, price, name, img) {
       if (!this.showMoveImg) { // 动画是否在运动
-        if (this.token != null) { // 登录了 直接存在用户名下
+        if (this.token) { // 登录了 直接存在用户名下
           addCart({ list: [{
             productId: id
-          }] }).then(res => {
+          }] }).then(() => {
             this.$store.dispatch('cart/addCart', {
               productId: id,
               salePrice: price,
@@ -127,21 +135,28 @@ export default {
         }
         if (!this.showCart) {
           this.$store.dispatch('cart/showCart', { showCart: true })
-          // this.SHOW_CART({ showCart: true })
         }
       }
     },
     checkout (productId) {
       this.$router.push({ path: '/checkout', query: { productId } })
     },
+    reloadComment () {
+      getComment(this.$route.query.productId).then(res => {
+        this.commentData = res.data
+      })
+    },
     editNum (num) {
       this.productNum = num
+    },
+    toFollowDetail (data) {
+      window.open(window.location.origin + '#/follow/detail/' + data)
     }
   },
   created () {
     let id = this.$route.query.productId
     this._productDet(id)
-    this.userId = getCookie('userId')
+    this.reloadComment()
   }
 }
 </script>

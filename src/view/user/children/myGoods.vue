@@ -37,7 +37,8 @@
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status===1">已上架</el-tag>
             <el-tag v-else-if="scope.row.status===2" type="success">已售出</el-tag>
-            <el-tag v-else type="warning">已下架</el-tag>
+            <el-tag v-else-if="scope.row.status===3" type="warning">被拍下</el-tag>
+            <el-tag v-else type="error">已下架</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -56,8 +57,11 @@
             <el-button size="mini" @click="handleSearch(scope.row.id)">
               查看
             </el-button>
-            <el-button
+            <el-button v-if="scope.row.status!==2"
               size="mini" @click="handleEdit(scope.row.id)">编辑
+            </el-button>
+            <el-button v-else size="mini" type="warning">
+              已售出
             </el-button>
             <el-popconfirm
               style="margin-left: 10px"

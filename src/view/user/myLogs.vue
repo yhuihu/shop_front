@@ -2,48 +2,36 @@
   <div>
     <div class="home" v-loading="loading" element-loading-text="加载中...">
       <section class="w mt30 clearfix">
-        <y-shelf :title="newTitle">
-          <div v-if="!noResult" slot="content" class="floors" >
-            <div class="imgbanner" @click="linkToMoreGoods()">
-              <img v-lazy="moreUrl">
-              <a class="cover-link"></a>
-            </div>
-            <mall-goods :msg="iitem" v-for="(iitem,j) in newGoods" :key="j+'key'"></mall-goods>
+        <y-shelf :title="title1">
+          <div slot="content" class="floors" >
+            <mall-goods :msg="iitem" v-for="(iitem,j) in logsGoods" :key="j+'key'"></mall-goods>
           </div>
         </y-shelf>
+        <el-pagination
+          v-if="!noResult"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[8,16,24,32]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
       </section>
-      <div class="no-info" v-if="noResultGoods">
+      <div class="no-info" v-if="noResult">
         <div class="no-data">
-          <img src="../assets/images/no-search.png" alt="#">
-          <br> 抱歉！暂时没有找到新商品
+          <img src="../../assets/images/no-search.png" alt="#">
+          <br> 抱歉！登录了才会保存日志哦
         </div>
       </div>
-<!--      <section class="w mt30 clearfix" v-if="token">-->
-<!--        <y-shelf :title="title1">-->
-<!--          <div slot="content" class="floors" >-->
-<!--            <div v-if="!noResult" class="imgbanner" @click="linkToMoreLogs()">-->
-<!--              <img v-lazy="moreUrl">-->
-<!--              <a class="cover-link"></a>-->
-<!--            </div>-->
-<!--            <mall-goods :msg="iitem" v-for="(iitem,j) in logsGoods" :key="j+'key'"></mall-goods>-->
-<!--          </div>-->
-<!--        </y-shelf>-->
-<!--      </section>-->
-<!--      <div class="no-info" v-if="noResult">-->
-<!--        <div class="no-data">-->
-<!--          <img src="../assets/images/no-search.png" alt="#">-->
-<!--          <br> 抱歉！暂时没有日志-->
-<!--        </div>-->
-<!--      </div>-->
     </div>
   </div>
 </template>
 
 <script>
 import mallGoods from '@/components/mallGoods'
-import { getSearch } from '@/api/goods'
+import { getGoodsLogs } from '@/api/goods'
 import YShelf from '@/components/shelf'
-import { mapGetters } from 'vuex'
 export default {
   components: {
     mallGoods,
@@ -51,66 +39,43 @@ export default {
   },
   data () {
     return {
-      banner: [],
-      mark: 0,
-      bgOpt: {
-        px: 0,
-        py: 0,
-        w: 0,
-        h: 0
-      },
-      newTitle: '最新上架',
-      title1: '近期浏览',
-      moreUrl: 'http://yhhu.xyz/1dKlpAo4RF7kjPXe6gidVFof',
+      noResult: false,
+      title1: '浏览日志',
+      moreUrl: 'http://yhhu.xyz/aYgEbD00UMVGQIwo4hP0QMH3',
       logsGoods: [],
-      newGoods: [],
-      home: [],
       loading: true,
-      notify: '1',
-      noResult: true,
-      noResultGoods: true,
-      timer: ''
+      pageSize: 8,
+      currentPage: 1,
+      total: 0
     }
   },
-  computed: {
-    ...mapGetters([
-      'token'
-    ])
-  },
   methods: {
-    linkToMoreGoods () {
-      this.$router.push({ path: '/goods' })
-    },
-    linkToMoreLogs () {
-      this.$router.push({ path: '/logs' })
-    },
-    _getSearch () {
+    getGoodsLogs () {
+      this.loading = true
       let params = {
-        size: 7,
-        page: 1
+        page: this.currentPage,
+        size: this.pageSize
       }
-      getSearch(params).then(res => {
-        if (res.code === 20000) {
-          this.newGoods = res.data.list
-          this.noResultGoods = false
-        } else {
-          this.noResultGoods = true
+      getGoodsLogs(params).then(res => {
+        this.logsGoods = res.data.logs
+        if (this.logsGoods.length === 0) {
+          this.noResult = true
         }
+        this.total = res.data.totalCount
       })
+      this.loading = false
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getGoodsLogs()
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.getGoodsLogs()
     }
   },
   created () {
-    this._getSearch()
-    // let params = { size: 7 }
-    // getGoodsLogs(params).then(res => {
-    //   this.logsGoods = res.data.logs
-    //   if (res.data.logs.length > 0) {
-    //     this.noResult = false
-    //   } else {
-    //     this.noResult = true
-    //   }
-    // })
-    this.loading = false
+    this.getGoodsLogs()
   }
 }
 </script>
@@ -418,10 +383,6 @@ export default {
       display: block;
       width: 100%;
       height: 100%;
-    }
-    > div {
-      float: left;
-      border: 1px solid #efefef;
     }
   }
 
