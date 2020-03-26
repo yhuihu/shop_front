@@ -16,7 +16,7 @@
           <el-col :span="8">
             <el-button type="success" v-if="followText==='关注'" round @click="followUser()">{{followText}}</el-button>
             <el-button type="warning" v-else round @click="unFollowUser()">{{followText}}</el-button>
-            <el-button style="border-color:green;color:green;" round>发简信</el-button>
+            <el-button style="border-color:green;color:green;" round @click="chatToUser()">发简信</el-button>
           </el-col>
         </el-row>
         <div style="margin-top: 40px;font-size:18px;">
@@ -131,6 +131,33 @@ export default {
     openProduct (id) {
       window.open('//' + window.location.host + '/#/goodsDetails?productId=' + id)
     },
+    chatToUser () {
+      let date = new Date()
+      let seperator1 = '-'
+      let seperator2 = ':'
+      let month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+      let strDate = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+      let currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+        ' ' + date.getHours() + seperator2 + date.getMinutes() +
+        seperator2 + date.getSeconds()
+      let chatUserData = {
+        nickName: this.nickName,
+        userId: this.targetId,
+        icon: this.icon,
+        createTime: currentdate,
+        isRead: 1
+      }
+      this.$store.dispatch('chat/addChatUser', chatUserData).then(() => {
+        this.$router.push({
+          name: 'message',
+          params: {
+            'targetId': this.targetId,
+            'nickName': this.nickName,
+            'icon': this.icon
+          }
+        })
+      })
+    },
     async _getOtherInfo (data) {
       await getOtherInfo(data).then(res => {
         if (res.code === 20000) {
@@ -140,7 +167,6 @@ export default {
           this.sellCount = res.data.sellCount
           this.nickName = res.data.nickName
           let goodsList = res.data.goodsList
-          console.log(res.data.goodsList)
           for (let i = 0; i < goodsList.length; i++) {
             goodsList[i].image = goodsList[i].image.split(',')
           }

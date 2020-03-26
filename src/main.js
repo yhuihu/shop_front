@@ -96,7 +96,7 @@ Vue.prototype.$messageBox = MessageBox
 Vue.config.productionTip = false
 Vue.prototype.$websocket = null
 
-const whiteList = ['/', '/message', '/home', '/goods', '/login', '/register', '/goodsDetails', '/search', '/refreshsearch', '/refreshgoods', '/follow/detail'] // 不需要登陆的页面
+const whiteList = ['/', '/home', '/goods', '/login', '/register', '/goodsDetails', '/search', '/refreshsearch', '/refreshgoods', '/follow/detail'] // 不需要登陆的页面
 router.beforeEach(function (to, from, next) {
   if (to.path === '/login' || to.path === '/register') {
     if (getCookie('SECOND_HAND_USER_TOKEN') !== undefined) {

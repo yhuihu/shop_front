@@ -3,7 +3,7 @@
     <div class="home" v-loading="loading" element-loading-text="加载中...">
       <section class="w mt30 clearfix">
         <y-shelf :title="newTitle">
-          <div v-if="!noResult" slot="content" class="floors" >
+          <div v-if="!noResultGoods" slot="content" class="floors" >
             <div class="imgbanner" @click="linkToMoreGoods()">
               <img v-lazy="moreUrl">
               <a class="cover-link"></a>
@@ -92,6 +92,7 @@ export default {
       getSearch(params).then(res => {
         if (res.code === 20000) {
           this.newGoods = res.data.list
+          console.log(this.newGoods)
           this.noResultGoods = false
         } else {
           this.noResultGoods = true

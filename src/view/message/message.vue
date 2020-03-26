@@ -22,7 +22,7 @@
                   <span v-if="current!==-1">和 {{targetName}} 的对话</span>
                   <span v-else>系统消息</span>
                 </el-header>
-                <el-main v-if="current!==-1">
+                <el-main v-if="current!==-1" id="chatDiv">
                   <el-row :key="item1.id+item1.content+item1.createTime" v-for="item1 in chatData">
                     <el-col v-if="item1.isMine===0" :span="24" style="margin-top:10px">
                       <el-avatar :size="50" style="float: left"
@@ -156,6 +156,7 @@ export default {
         this.targetId = target.userId
         this.targetIcon = target.icon
         this.chatData = this.chatList[target.userId]
+        this.scrollToBottom()
       }
     },
     submitMessage () {
@@ -233,10 +234,38 @@ export default {
 
       var uuid = s.join('')
       return uuid
+    },
+    scrollToBottom () {
+      this.$nextTick(() => {
+        let msg = document.getElementById('chatDiv') // 获取对象
+        msg.scrollTop = msg.scrollHeight // 滚动高度
+      })
+    },
+    initPage () {
+      let flag = this.$route.params.targetId && this.$route.params.nickName && this.$route.params.icon
+      console.log(flag)
+      if (flag) {
+        console.log('in')
+        this.targetName = this.$route.params.nickName
+        this.targetId = this.$route.params.targetId
+        this.targetIcon = this.$route.params.icon
+        this.chatData = this.chatList[this.targetId]
+        let userListData = this.userList
+        let that = this
+        for (let i = 0; i < userListData.length; i++) {
+          if (userListData[i].userId === this.targetId) {
+            that.current = i
+            break
+          }
+        }
+      } else {
+        console.log('in')
+        this.chatData = this.chatList['SECOND_HAND_MESSAGE']
+      }
     }
   },
   created () {
-    this.chatData = this.chatList['SECOND_HAND_MESSAGE']
+    this.initPage()
   },
   computed: {
     ...mapGetters([
