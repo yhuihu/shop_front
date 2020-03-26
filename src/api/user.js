@@ -80,3 +80,18 @@ export function register (data) {
     data
   })
 }
+
+export function sendForgetEmail (data) {
+  return request({
+    url: '/email/' + data,
+    method: 'put'
+  })
+}
+
+export function reset (data) {
+  return request({
+    url: '/profile/reset',
+    method: 'post',
+    data
+  })
+}

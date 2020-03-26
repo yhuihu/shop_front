@@ -1,8 +1,5 @@
 <template>
 <div>
-  <s-header>
-    <div slot="nav"></div>
-  </s-header>
   <div style="width: 50%;margin-left: auto;margin-right: auto;margin-top:20px;">
     <el-container>
       <el-aside width="200px">
@@ -79,7 +76,6 @@
 </template>
 
 <script>
-import SHeader from '@/common/header'
 import { getOtherInfo, addFollow, checkFollow, unFollow } from '@/api/follow'
 import { mapGetters } from 'vuex'
 
@@ -183,9 +179,6 @@ export default {
     this.targetId = id
     this._checkFollow()
     this._getOtherInfo(id)
-  },
-  components: {
-    SHeader
   }
 }
 </script>

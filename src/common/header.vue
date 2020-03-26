@@ -46,9 +46,6 @@
                         <router-link to="/user/information">账号资料</router-link>
                       </li>
                       <li>
-                        <router-link to="/logs"><a>浏览日志</a></router-link>
-                      </li>
-                      <li>
                         <router-link to="/user/myFollow"><a>我的关注</a></router-link>
                       </li>
                       <li>

@@ -259,10 +259,12 @@ export default {
           }
         }
       } else {
-        console.log('in')
         this.chatData = this.chatList['SECOND_HAND_MESSAGE']
       }
     }
+  },
+  update: function () {
+    this.scrollToBottom()
   },
   created () {
     this.initPage()

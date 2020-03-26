@@ -61,7 +61,7 @@ const routes = [
   },
   {
     path: '/payment',
-    name: 'checkout',
+    name: 'payment',
     component: () => import('@/view/order/payment')
   },
   {
@@ -92,7 +92,7 @@ const routes = [
       },
       {
         path: 'myFollow',
-        name: '账户资料',
+        name: '我关注的人',
         component: () => import('@/view/user/children/myFollow')
       },
       {
