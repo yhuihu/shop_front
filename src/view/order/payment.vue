@@ -1,8 +1,5 @@
 <template>
   <div>
-    <y-header>
-      <div slot="nav"></div>
-    </y-header>
   <div class="w" style="padding-bottom: 100px;">
     <y-shelf title="支付订单">
       <div slot="content">
@@ -65,7 +62,8 @@
 import YShelf from '@/components/shelf'
 import YButton from '@/components/myButton'
 import { getCheckOrder, checkOrder } from '@/api/order'
-import YHeader from '@/common/header'
+import { getCart } from '@/api/goods'
+import { setStore } from '@/utils/storage'
 export default {
   data () {
     return {
@@ -134,12 +132,21 @@ export default {
     paySuc () {
       this.payNow = '确认订单中...'
       this.submit = false
+      let that = this
       checkOrder(this.orderId).then(res => {
         if (res.code === 20000) {
           this.$root.$message.success('确认订单成功！')
-          setTimeout(function () {
-            this.$router.push('/home')
-          }, 2000)
+          getCart().then(res => {
+            if (res.code === 20000) {
+              setStore('buyCart', res.data)
+            }
+            // 重新初始化一次本地数据
+          }).then(() => {
+            this.$store.dispatch('cart/initCart')
+            setTimeout(function () {
+              that.$router.push('/home')
+            }, 2000)
+          })
         } else {
           this.payNow = '确认订单'
           this.submit = true
@@ -179,8 +186,7 @@ export default {
   },
   components: {
     YShelf,
-    YButton,
-    YHeader
+    YButton
   }
 }
 </script>

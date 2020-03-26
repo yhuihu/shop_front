@@ -111,3 +111,18 @@ export function updateMyGoods (data) {
     data
   })
 }
+
+export function orderList (data) {
+  return request({
+    url: '/order',
+    method: 'get',
+    params: data
+  })
+}
+
+export function delOrder (data) {
+  return request({
+    url: '/order/' + data,
+    method: 'delete'
+  })
+}

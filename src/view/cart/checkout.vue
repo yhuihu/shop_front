@@ -1,8 +1,5 @@
 <template>
   <div class="checkout">
-    <y-header>
-      <div slot="nav"></div>
-    </y-header>
     <div class="w" style="padding-top: 40px;">
       <!-- 收货地址 -->
       <y-shelf title="收货信息">
@@ -142,7 +139,6 @@ import { addOrder } from '@/api/order'
 import YShelf from '@/components/shelf'
 import YButton from '@/components/myButton'
 import YPopup from '@/components/popup'
-import YHeader from '@/common/header'
 export default {
   data () {
     return {
@@ -403,8 +399,7 @@ export default {
   components: {
     YShelf,
     YButton,
-    YPopup,
-    YHeader
+    YPopup
   }
 }
 </script>

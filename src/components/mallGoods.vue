@@ -51,13 +51,17 @@ export default {
         if (this.token) { // 登录了 直接存在用户名下
           addCart({ list: [{
             productId: id
-          }] }).then(() => {
-            this.$store.dispatch('cart/addCart', {
-              productId: id,
-              salePrice: price,
-              productName: name,
-              productImg: img
-            })
+          }] }).then(res => {
+            if (res.code === 20000) {
+              this.$store.dispatch('cart/addCart', {
+                productId: id,
+                salePrice: price,
+                productName: name,
+                productImg: img
+              })
+            } else {
+              this.$root.$message.error('该商品已被其他用户拍下')
+            }
           }).catch()
         }
         if (!this.showCart) {

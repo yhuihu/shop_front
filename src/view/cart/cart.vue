@@ -1,8 +1,5 @@
 <template>
   <div class="shopping-cart">
-    <y-header>
-      <div slot="nav"></div>
-    </y-header>
     <div class="store-content page-cart">
       <div class="gray-box">
         <div class="title"><h2>购物清单</h2></div>
@@ -106,7 +103,6 @@
 import { getCart, cartEdit, editCheckAll, delCart, delCartChecked } from '@/api/goods'
 import { mapGetters } from 'vuex'
 import YButton from '@/components/myButton'
-import YHeader from '@/common/header'
 export default {
   data () {
     return {
@@ -247,8 +243,7 @@ export default {
     this.$store.dispatch('cart/initCart')
   },
   components: {
-    YButton,
-    YHeader
+    YButton
   }
 }
 </script>

@@ -22,7 +22,7 @@
           <template slot-scope="scope">
             <el-image
               style="width: 100px; height: 100px"
-              :src="scope.row.image" lazy></el-image>
+              :src="scope.row.image.split(',')[0]" lazy></el-image>
           </template>
         </el-table-column>
         <el-table-column
@@ -61,7 +61,7 @@
               size="mini" @click="handleEdit(scope.row.id)">编辑
             </el-button>
             <el-button v-else size="mini" type="warning">
-              已售出
+              已售
             </el-button>
             <el-popconfirm
               style="margin-left: 10px"

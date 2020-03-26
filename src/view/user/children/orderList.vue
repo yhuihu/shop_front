@@ -7,8 +7,8 @@
             <div class="gray-sub-title cart-title">
               <div class="first">
                 <div>
-                  <span class="date" v-text="item.createDate"></span>
-                  <span class="order-id"> 订单号： <a @click="orderDetail(item.orderId)">{{item.orderId}}</a> </span>
+                  <span class="date" v-text="item.createTime"></span>
+                  <span class="order-id"> 订单号： <a @click="orderDetail(item.id)">{{item.id}}</a> </span>
                 </div>
                 <div class="f-bc">
                   <span class="price">单价</span>
@@ -18,7 +18,7 @@
               </div>
               <div class="last">
                 <span class="sub-total">实付金额</span>
-                <span class="order-detail"> <a @click="orderDetail(item.orderId)">查看详情 ><em class="icon-font"></em></a> </span>
+                <span class="order-detail"> <a @click="orderDetail(item.id)">查看详情 ><em class="icon-font"></em></a> </span>
               </div>
             </div>
             <div class="pr">
@@ -73,9 +73,8 @@
   </div>
 </template>
 <script>
-// import { orderList, delOrder } from '@/api/goods'
+import { orderList, delOrder } from '@/api/goods'
 import YShelf from '@/components/shelf'
-import { getStore } from '@/utils/storage'
 export default {
   data () {
     return {
@@ -132,18 +131,18 @@ export default {
       }
     },
     _orderList () {
+      this.loading = true
       let params = {
-        params: {
-          userId: this.userId,
-          size: this.pageSize,
-          page: this.currentPage
-        }
+        size: this.pageSize,
+        page: this.currentPage
       }
       orderList(params).then(res => {
-        this.orderList = res.result.data
-        this.total = res.result.total
-        this.loading = false
-      })
+        if (res.code === 20000) {
+          this.orderList = res.data.list
+          this.total = res.data.total
+          this.loading = false
+        }
+      }).catch()
     },
     _delOrder (orderId, i) {
       let params = {
@@ -161,7 +160,6 @@ export default {
     }
   },
   created () {
-    this.userId = getStore('userId')
     this._orderList()
   },
   components: {
