@@ -24,6 +24,9 @@ import {
   Message,
   MessageBox,
   Notification,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
   Steps,
   Step,
   Table,
@@ -47,6 +50,9 @@ import VueLazyLoad from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
 import store from './store'
 Vue.use(Avatar)
+Vue.use(Dropdown)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
 Vue.use(Button)
 Vue.use(ButtonGroup)
 Vue.use(Pagination)

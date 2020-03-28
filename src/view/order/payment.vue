@@ -129,6 +129,16 @@ export default {
         this.orderTotal = totalPrice
       })
     },
+    _getCartList () {
+      getCart().then(res => {
+        if (res.code === 20000) {
+          setStore('buyCart', res.data)
+        }
+        // 重新初始化一次本地数据
+      }).then(() => {
+        this.$store.dispatch('cart/initCart')
+      })
+    },
     paySuc () {
       this.payNow = '确认订单中...'
       this.submit = false
@@ -180,6 +190,7 @@ export default {
     this.orderId = this.$route.query.orderId
     if (this.orderId) {
       this._getOrderDet(this.orderId)
+      this._getCartList()
     } else {
       this.$router.push({ path: '/' })
     }

@@ -316,6 +316,7 @@ export default {
       }
       addOrder(params).then(res => {
         if (res.code === 20000) {
+          this.$store.dispatch('cart/initCart')
           this.payment(res.data)
         } else {
           this.message(res.message)

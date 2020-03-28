@@ -41,12 +41,12 @@
           <el-form-item label="价格" prop="price">
             <el-input v-model="form.price" oninput="value=value.replace(/[^0-9.]/g,'')"></el-input>
           </el-form-item>
-          <el-form-item label="上架/下架">
-            <el-radio-group v-model="form.status">
-              <el-radio :label="1">上架</el-radio>
-              <el-radio :label="0">下架</el-radio>
-            </el-radio-group>
-          </el-form-item>
+<!--          <el-form-item label="上架/下架">-->
+<!--            <el-radio-group v-model="form.status">-->
+<!--              <el-radio :label="1">上架</el-radio>-->
+<!--              <el-radio :label="0">下架</el-radio>-->
+<!--            </el-radio-group>-->
+<!--          </el-form-item>-->
           <el-form-item label="商品详情" prop="goodDetail">
             <tinymce-editor v-model="form.desc" @onClick="onClick" ref="editor"></tinymce-editor>
           </el-form-item>
@@ -115,8 +115,8 @@ export default {
         price: '',
         classificationId: '',
         desc: '请输入商品内容',
-        fileList: [],
-        status: 1
+        fileList: []
+        // status: 1
       },
       options: [],
       rules: {

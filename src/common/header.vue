@@ -25,7 +25,7 @@
               <router-link to="/home"><a>首页</a></router-link>
               <router-link to="/goods"><a>全部</a></router-link>
               <router-link to="/message"><a>消息</a></router-link>
-              <router-link to="/logs"><a>日志</a></router-link>
+              <router-link to="/logs"><a>足迹</a></router-link>
             </div>
             <div class="nav-aside" ref="aside" :class="{fixed:st}">
               <div class="user pr">

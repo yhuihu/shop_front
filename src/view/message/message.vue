@@ -243,9 +243,7 @@ export default {
     },
     initPage () {
       let flag = this.$route.params.targetId && this.$route.params.nickName && this.$route.params.icon
-      console.log(flag)
       if (flag) {
-        console.log('in')
         this.targetName = this.$route.params.nickName
         this.targetId = this.$route.params.targetId
         this.targetIcon = this.$route.params.icon
