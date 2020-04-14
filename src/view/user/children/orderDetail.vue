@@ -114,7 +114,6 @@
 <script>
 import { deleteOrder, getOrderDet, pay } from '@/api/order'
 import YShelf from '@/components/shelf'
-import countDown from '@/components/countDown'
 export default {
   data () {
     return {
@@ -190,8 +189,7 @@ export default {
     this._getOrderDet()
   },
   components: {
-    YShelf,
-    countDown
+    YShelf
   }
 }
 </script>

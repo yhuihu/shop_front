@@ -60,8 +60,9 @@
             label="状态">
             <template slot-scope="scope">
               <el-tag v-if="scope.row.status===1" type="success" disable-transitions>上架中</el-tag>
-              <el-tag v-if="scope.row.status===2" type="error" disable-transitions>已售出</el-tag>
-              <el-tag v-if="scope.row.status===3" type="warning" disable-transitions>已被拍下</el-tag>
+<!--              <el-tag v-if="scope.row.status===2" type="error" disable-transitions>已售出</el-tag>-->
+<!--              <el-tag v-if="scope.row.status===3" type="warning" disable-transitions>已被拍下</el-tag>-->
+              <el-tag v-else type="warning" disable-transitions>已被拍</el-tag>
             </template>
           </el-table-column>
           <el-table-column

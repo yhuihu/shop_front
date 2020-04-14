@@ -17,11 +17,36 @@
                        @click="toggleShow">
               上传头像
             </el-button>
+            <el-button type="primary" icon="upload" style="position: absolute;bottom: 15px;margin-left: 150px;"
+                       @click="passwordToggleShow">
+              修改密码
+            </el-button>
+            <el-dialog
+              title="修改密码"
+              :visible.sync="passwordDialogShow"
+              width="30%"
+              center>
+              <el-form label-width="100px" :model="passwordForm">
+                <el-form-item label="原密码">
+                  <el-input v-model="passwordForm.beforePassword"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" style="margin-top: 20px;">
+                  <el-input v-model="passwordForm.newPassword"></el-input>
+                </el-form-item>
+                <el-form-item label="确认新密码" style="margin-top: 20px;">
+                  <el-input v-model="passwordForm.newPassword1"></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button v-loading="changePasswordLoading" type="primary" @click="changePassword">确 定</el-button>
+             </span>
+            </el-dialog>
             <el-dialog
               title="修改头像"
               :visible.sync="show"
               width="700px">
-              <icon-upload ref="child" :Options="cropperOption" :Name="cropperName" @uploadImgSuccess="handleUploadSuccess"></icon-upload>
+              <icon-upload ref="child" :Options="cropperOption" :Name="cropperName"
+                           @uploadImgSuccess="handleUploadSuccess"></icon-upload>
             </el-dialog>
           </el-form-item>
           <el-form-item label="账号">
@@ -58,10 +83,12 @@
 <script>
 import YShelf from '@/components/shelf'
 import PanThumb from '@/components/PanThumb'
-import { getUserDetail, updateInformation } from '@/api/user'
+import { getUserDetail, updateInformation, modifyPassword, logout } from '@/api/user'
 import { getCookie } from '@/utils/auth'
 import iconUpload from '@/components/icon-upload'
 import { provinceAndCityData, CodeToText, TextToCode } from 'element-china-area-data'
+import { removeStore } from '@/utils/storage'
+
 export default {
   data () {
     return {
@@ -69,6 +96,8 @@ export default {
       selectedOptions: ['110000', '110100'],
       show: false,
       formLoading: true,
+      passwordDialogShow: false,
+      changePasswordLoading: false,
       url: process.env.VUE_APP_BASE_SERVER + '/upload',
       headers: {
         Authorization: 'Bearer ' + getCookie('SECOND_HAND_USER_TOKEN')
@@ -85,6 +114,11 @@ export default {
         status: ''
       },
       cropperName: 'icon',
+      passwordForm: {
+        beforePassword: '',
+        newPassword: '',
+        newPassword1: ''
+      },
       cropperOption: {
         img: '',
         size: 1,
@@ -125,6 +159,34 @@ export default {
       this.show = !this.show
       this.cropperOption.img = this.form.icon
     },
+    passwordToggleShow () {
+      this.passwordDialogShow = !this.passwordDialogShow
+    },
+    changePassword () {
+      this.changePasswordLoading = true
+      if (this.newPassword !== this.newPassword1) {
+        this.$root.$message.error('两次密码不相等！')
+        this.changePasswordLoading = false
+        return
+      }
+      let params = {
+        oldPassword: this.beforePassword,
+        newPassword: this.newPassword
+      }
+      modifyPassword(params).then(res => {
+        if (res.code === 20000) {
+          logout().then(res => {
+            this.$store.dispatch('user/logout').then(() => {
+              removeStore('buyCart')
+              window.location.href = '/'
+            }).catch(err => {
+              this.$message.error(err)
+            })
+          })
+        }
+        this.changePasswordLoading = false
+      })
+    },
     handleUploadSuccess (data) {
       this.show = false
       this.form.icon = data
@@ -156,7 +218,9 @@ export default {
             window.location.reload()
           }, 2000)
         }
-      }).catch().finally(() => { this.formLoading = false })
+      }).catch().finally(() => {
+        this.formLoading = false
+      })
     }
   },
   created () {

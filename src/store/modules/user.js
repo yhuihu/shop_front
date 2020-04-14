@@ -38,6 +38,7 @@ const actions = {
         } else {
           commit('SET_TOKEN', res.data.token)
           setCookie('SECOND_HAND_USER_TOKEN', res.data.token)
+          setCookie('SECOND_HAND_USER_ROLE', res.data.role[0])
         }
         resolve(res)
       }).catch(error => {

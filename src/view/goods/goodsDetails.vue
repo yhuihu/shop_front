@@ -1,9 +1,6 @@
 <!--商品详情-->
 <template>
   <div>
-    <s-header>
-      <div slot="nav"></div>
-    </s-header>
     <div class="w store-content">
       <div class="gray-box">
         <div class="gallery-wrapper">
@@ -40,7 +37,7 @@
               <br>
               <p>发货地址：{{product.address}}</p></div>
           </div>
-          <div class="buy">
+          <div class="buy" v-if="product.status===1">
             <y-button text="加入购物车"
                       @btnClick="addCart(product.id,product.price,product.title,product.image.split(',')[0])"
                       classStyle="main-btn"
@@ -48,6 +45,11 @@
             <y-button text="现在购买"
                       @btnClick="checkout(product.productId)"
                       style="width: 145px;height: 50px;line-height: 48px;margin-left: 10px"/>
+          </div>
+          <div class="buy" v-else>
+            <y-button text="商品已被拍下"
+                      classStyle="disabled-btn"
+                      style="width: 145px;height: 50px;line-height: 48px;" disabled="true"/>
           </div>
         </div>
       </div>
@@ -77,7 +79,6 @@ import { productDet, addCart } from '@/api/goods'
 import { mapGetters } from 'vuex'
 import YShelf from '@/components/goodsButton'
 import YButton from '@/components/myButton'
-import SHeader from '@/common/header'
 import comment from '@/components/comment'
 import { getComment } from '@/api/comment'
 
@@ -95,7 +96,7 @@ export default {
     }
   },
   components: {
-    YShelf, YButton, SHeader, comment
+    YShelf, YButton, comment
   },
   computed: {
     ...mapGetters([

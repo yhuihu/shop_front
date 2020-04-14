@@ -21,7 +21,7 @@
       </div>
       <div class="content">{{item.content}}</div>
       <div class="control">
-        <span class="comment-reply" @click="showCommentInput(item)">
+        <span class="comment-reply" @click="showCommentInput(item,item)">
           <i class="iconfont icon-comment"></i>
           <span>回复</span>
         </span>
@@ -175,6 +175,7 @@ export default {
        * reply: 当前回复的评论
        */
     showCommentInput (item, reply) {
+      console.log(reply)
       if (reply) {
         this.replyUser = '@' + reply.nickName + ' '
         this.replyUserName = reply.nickName
