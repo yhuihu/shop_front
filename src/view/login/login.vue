@@ -174,11 +174,11 @@ export default {
           }).catch(() => {
             this.$store.dispatch('user/logout')
           })
-          // this.$store.dispatch('chat/initChat')
         } else {
-          return false
+          this.$root.$message.error(res.message)
         }
-      }).catch(() => {
+      }).catch(res => {
+        this.$root.$message.error(res.message)
       }).finally(() => {
         this.loginTxt = '登录'
       }

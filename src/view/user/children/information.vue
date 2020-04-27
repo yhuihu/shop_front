@@ -164,14 +164,14 @@ export default {
     },
     changePassword () {
       this.changePasswordLoading = true
-      if (this.newPassword !== this.newPassword1) {
+      if (this.passwordForm.newPassword !== this.passwordForm.newPassword1) {
         this.$root.$message.error('两次密码不相等！')
         this.changePasswordLoading = false
         return
       }
       let params = {
-        oldPassword: this.beforePassword,
-        newPassword: this.newPassword
+        oldPassword: this.passwordForm.beforePassword,
+        newPassword: this.passwordForm.newPassword
       }
       modifyPassword(params).then(res => {
         if (res.code === 20000) {

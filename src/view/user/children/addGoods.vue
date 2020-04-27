@@ -170,7 +170,9 @@ export default {
         if (result.code === 20000) {
           const newData = result.data
           this.handleData(newData)
-          this.options.push(newData[0])
+          for (let i = 0; i < newData.length; i++) {
+            this.options.push(newData[i])
+          }
         }
       } catch (e) {
         this.$root.$message.error('数据初始化失败~请稍后重试')
@@ -208,7 +210,7 @@ export default {
     },
     handleData (data) {
       for (let i = 0; i < data.length; i++) {
-        if (data[i].children.length === 0) {
+        if (data[i].children.length === 0 && !data[i].isParent) {
           delete data[i].children
         } else {
           this.handleData(data[i].children)

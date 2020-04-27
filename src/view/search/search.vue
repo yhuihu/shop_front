@@ -176,12 +176,14 @@ export default {
       getAllClassification().then(res => {
         const newData = res.data
         this.handleData(newData)
-        this.options.push(newData[0])
+        for (let i = 0; i < newData.length; i++) {
+          this.options.push(newData[i])
+        }
       }).catch(() => {})
     },
     handleData (data) {
       for (let i = 0; i < data.length; i++) {
-        if (data[i].children.length === 0) {
+        if (data[i].children.length === 0 && !data[i].isParent) {
           delete data[i].children
         } else {
           this.handleData(data[i].children)

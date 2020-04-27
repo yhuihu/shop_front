@@ -34,7 +34,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(res => {
         if (res.code !== 20000) {
-          reject(res.message)
+          reject(res)
         } else {
           commit('SET_TOKEN', res.data.token)
           setCookie('SECOND_HAND_USER_TOKEN', res.data.token)
