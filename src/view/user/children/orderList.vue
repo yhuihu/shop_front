@@ -67,7 +67,7 @@
               <el-button v-if="scope.row.status===0" size="mini" type="danger"
                          @click="_delOrder(scope.row.id,scope.row.goodsId)">取消
               </el-button>
-              <el-button v-if="scope.row.status===3" size="mini" type="success">收货</el-button>
+              <el-button @click="_checkOrder(scope.row.id,scope.row.goodsId)" v-if="scope.row.status===3" size="mini" type="success">收货</el-button>
               <el-button type="info" size="mini">联系</el-button>
             </template>
           </el-table-column>
@@ -89,7 +89,7 @@
 </template>
 <script>
 import YShelf from '@/components/shelf'
-import { pay, orderList, deleteOrder } from '@/api/order'
+import { pay, orderList, deleteOrder, checkGetOrder } from '@/api/order'
 
 export default {
   data () {
@@ -152,6 +152,16 @@ export default {
           this._orderList()
         } else {
           this.message('删除失败')
+        }
+      })
+    },
+    _checkOrder (orderId) {
+      checkGetOrder(orderId).then(res => {
+        if (res.code === 20000) {
+          this.currentPage = 1
+          this._orderList()
+        } else {
+          this.message('确认收货失败')
         }
       })
     },

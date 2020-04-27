@@ -49,3 +49,10 @@ export function getOrderDet (data) {
     method: 'get'
   })
 }
+
+export function checkGetOrder (data) {
+  return request({
+    url: '/shipping/' + data,
+    method: 'put'
+  })
+}
