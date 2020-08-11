@@ -21,7 +21,7 @@
     "node-sass": "^4.13.0",
     "qiniu-js": "^2.5.5",
     "sass-loader": "^8.0.0",
-    "tinymce": "^5.1.6",
+    "tinymce": "^5.4.0",
     "vue": "^2.6.10",
     "vue-cropper": "^0.4.8",
     "vue-infinite-scroll": "^2.0.2",
